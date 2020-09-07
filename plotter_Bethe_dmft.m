@@ -6,11 +6,11 @@ if PhaseDiagram == true && ZeroTempSpan == true
     while U <= 5.00 
         i = i + 1;
         Z = Zweight(w,Sigma_loc{i});
-        scatter(U,Z,'k','filled'); hold on
+        scatter(2*U,Z,'k','filled'); hold on % (Units: D=2t)
         U = U + Ustep;
     end
     title(sprintf('IPT  |  Quasiparticle weight at T = %f',1/beta))
-    xlabel('$U/D$','Interpreter','latex')
+    xlabel('$U/t$','Interpreter','latex')
     ylabel('$Z = M/M^*$','Interpreter','latex')
     
 elseif PhaseDiagram == true && ZeroTempSpan == false
