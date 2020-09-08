@@ -31,12 +31,12 @@
 clear all; clc;
 %% INPUT: Physical Parameters 
 D = 1;                  % Bandwidth
-U = 2.7;                % On-site Repulsion    } Overriden if PhaseDiagram
+U = 3;                % On-site Repulsion    } Overriden if PhaseDiagram
 beta = 50;             % Inverse Temperature  } flag is set to true...
 
 %% INPUT: Boolean Flags
-InsulatingBIAS = 1;     % Changes initial guess of gloc (should favour Mott phase)
-PhaseDiagram = 1;       % Overrides given U and beta values and performs a full scan
+InsulatingBIAS = 0;     % Changes initial guess of gloc (should favour Mott phase)
+PhaseDiagram = 0;       % Overrides given U and beta values and performs a full scan
 ZeroTempSpan = 0;       % If both PhaseDiagram and ZeroTemp are set to true the scan
                         % spans only U values, with beta fixed to 1000.
 
