@@ -2,37 +2,12 @@
 % 
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
-% 
-% Redistribution and use in source and binary forms, with or without
-% modification, are permitted provided that the following conditions are met:
-% 
-% 1. Redistributions of source code must retain the above copyright notice, this
-%    list of conditions and the following disclaimer.
-% 
-% 2. Redistributions in binary form must reproduce the above copyright notice,
-%    this list of conditions and the following disclaimer in the documentation
-%    and/or other materials provided with the distribution.
-% 
-% 3. Neither the name of the copyright holder nor the names of its
-%    contributors may be used to endorse or promote products derived from
-%    this software without specific prior written permission.
-% 
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-% DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-% FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-% DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-% SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-% CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-% OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 clear all; clc;
 %% INPUT: Physical Parameters 
 D = 1;                  % Bandwidth
-U = 3;                % On-site Repulsion    } Overriden if PhaseDiagram
-beta = 50;             % Inverse Temperature  } flag is set to true...
+U = 5;                  % On-site Repulsion    } Overriden if PhaseDiagram
+beta = 50;              % Inverse Temperature  } flag is set to true...
 
 %% INPUT: Boolean Flags
 InsulatingBIAS = 0;     % Changes initial guess of gloc (should favour Mott phase)
@@ -53,7 +28,7 @@ Tstep = 0.005;          % Temperature incremental step for Phase Diagrams
 %% Main
 
 % Frequency Values
-w = linspace(-6, 6, Resolution); 
+w = linspace(-6, 6, Resolution*10); 
 
 % Initial guess for the local Green's function
 gloc_0 = semiHilbert(w + 10^(-3)*1i,D); % D is the DOS "radius"
@@ -73,14 +48,15 @@ if PhaseDiagram == true && ZeroTempSpan == true
 
 elseif PhaseDiagram == true && ZeroTempSpan == false
     %% Full Phase Diagram span
-    i = 0; T = 10^(-6);
+    i = 0; T = 10^(-6); restart_gloc = gloc_0;
     while T < 0.05
         i = i + 1;
         j = 0; 
         U = 0; 
         while U <= 5.00  
             j = j + 1; beta = 1/T;
-            [gloc{i,j},Sigma_loc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,loops,mixing,error);
+            [gloc{i,j},Sigma_loc{i,j}] = DMFT_loop(restart_gloc,w,D,U,beta,loops,mixing,error);
+            restart_gloc = gloc{i,j};
             U = U + Ustep;
         end
         T = T + Tstep; 
@@ -89,7 +65,8 @@ elseif PhaseDiagram == true && ZeroTempSpan == false
 else
     %% Single (U, beta) pair calculation
     [gloc,Sigma_loc] = DMFT_loop(gloc_0,w,D,U,beta,loops,mixing,error); 
+    I = LuttingerIntegral(w,Sigma_loc,gloc)
 end
 
 %% Plotting stuff (calling a script...)
-plotter_Bethe_dmft;
+%plotter_Bethe_dmft;
