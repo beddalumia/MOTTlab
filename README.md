@@ -1,4 +1,4 @@
-# What dMFTlab is
+# What IPT.lab is
 A didactic/explorative implementation of (real axis) IPT-based Dynamical Mean Field Theory for the half-filled Hubbard model on the Bethe lattice, within Matlab language (R2019a).
 
 # License and stuff
