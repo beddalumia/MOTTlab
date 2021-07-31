@@ -1,3 +1,5 @@
+## MIT tutorial
+
 GOAL: to run the IPT codes for the (approximate) solution of 
       the Hubbard model in DMFT
 
