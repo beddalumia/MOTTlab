@@ -1,0 +1,4 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+# Language override for damn matlab syntax recognition
+*.m linguist-language=MATLAB
