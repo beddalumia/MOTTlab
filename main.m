@@ -7,31 +7,35 @@ clear all; clc
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 6;               % On-site Repulsion    } Overriden if PhaseDiagram
+U    = 5;               % On-site Repulsion    } Overriden if PhaseDiagram
 beta = 10^3;            % Inverse Temperature  } flag is set to true...
 
 %% INPUT: Boolean Flags
-MottBIAS     = 1;       % Changes initial guess of gloc (strongly favours Mott phase)
-Uline        = 0;       % Takes and fixes the given beta value and performs a U-driven line
-Tline        = 0;       % Takes and fixes the given U value and performs a T-driven line
+MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
+Uline        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+Tline        = 1;       % Takes and fixes the given U value and performs a T-driven line
 UTscan       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 DoSPECTRAL   = 0;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all* the figures
 
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
-err   = 10^(-1);        % Convergence threshold for self-consistency
-mix   = 0.1;            % Mixing parameter for DMFT iterations (=1 means full update)
+err   = 1e-1;           % Convergence threshold for self-consistency
+mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^12;           % Energy resolution in real-frequency axis
-Ustep = 0.05;           % Hubbard U incremental step for phase diagrams
-Tstep = 0.005;          % Temperature incremental step for phase diagrams
+Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
+Ustep = 0.09;           % Hubbard U incremental step for phase diagrams
+Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
+Tmin  = 5e-3;           % Temperature U minimum value for phase diagrams
+Tstep = 5e-3;           % Temperature incremental step for phase diagrams
+Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Init
 
 % Frequency Values
-w = linspace(-6, 6, wres); 
+w = linspace(-6,6,wres); 
 
 % Initial guess for the local Green's function
 if MottBIAS
@@ -51,65 +55,68 @@ end
 if Uline
     %% U-driven MIT line [given T]
     clear('gloc','Sigma_loc','Z','I')
-    i = 0; U = 0; 
-    while U <= 5.00 
+    i = 0; U = Umin; 
+    while U <= Umax 
         i = i + 1;
         [gloc{i},Sigma_loc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
         Z(i) = Zweight(w,Sigma_loc{i});
-        I(i) = LuttingerIntegral(w,Sigma_loc{i},gloc{i});
+        I(i) = -LuttingerIntegral(w,Sigma_loc{i},gloc{i});
+        S(i) = -norm(Sigma_loc{i}(round(wres/2)+1)-Sigma_loc{i}(wres));
         U = U + Ustep;
     end
     if(DoPLOT)
-        plot_Uline(Z,I,beta,Ustep)
+        plot_Uline(Z,I,beta,Umin,Ustep,Umax)
     end
 end
 
 if Tline
     %% T-driven MIT line [given U]
     clear('gloc','Sigma_loc','Z','I')
-    i = 0; T = 10^(-6);
-    while T <= 0.05 
+    i = 0; T = Tmin;
+    while T <= Tmax 
         i = i + 1; beta = 1/T;
         [gloc{i},Sigma_loc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
         Z(i) = Zweight(w,Sigma_loc{i});
-        I(i) = LuttingerIntegral(w,Sigma_loc{i},gloc{i});
+        I(i) = -LuttingerIntegral(w,Sigma_loc{i},gloc{i});
+        S(i) = -norm(Sigma_loc{i}(round(wres/2)+1)-Sigma_loc{i}(wres));
         T = T + Tstep;
     end
     if(DoPLOT)
-        plot_Tline(Z,I,U,Tstep)
+        plot_Tline(Z,I,U,Tmin,Tstep,Tmax)
     end
 end
 
 if UTscan
     %% Full Phase-Diagram [U-driven]
     clear('gloc','Sigma_loc','Z','I')
-    i = 0; T = 10^(-6); %restart_gloc = gloc_0;
-    while T < 0.05
+    i = 0; T = Tmin; %restart_gloc = gloc_0;
+    while T < Tmax
         i = i + 1;
         j = 0; 
-        U = 0; 
-        while U <= 5.00  
+        U = Umin; 
+        while U <= Umax  
             j = j + 1; beta = 1/T;
             [gloc{i,j},Sigma_loc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
             %restart_gloc = gloc{i,j};
             Z(i,j) = Zweight(w,Sigma_loc{i,j});
-            I(i,j) = LuttingerIntegral(w,Sigma_loc{i,j},gloc{i,j});
+            I(i,j) = -LuttingerIntegral(w,Sigma_loc{i,j},gloc{i,j});
+            S(i,j) = -norm(Sigma_loc{i,j}(round(wres/2)+1)-Sigma_loc{i,j}(wres));
             U = U + Ustep;
         end
         T = T + Tstep; 
     end
     if(DoPLOT)
-        plot_phase_diagram(Z,Ustep,Tstep)
+        plot_phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
     end
 end
 
 %% Plotter Module
 %  -> to be moved in a proper MATLAB package 
 
-function plot_Uline(Z,I,beta,Ustep)
+function plot_Uline(Z,I,beta,Umin,Ustep,Umax)
     figure("Name",'U-driven MIT')
-    i=0; U = 0;
-    while U <= 5.00 
+    i=0; U = Umin;
+    while U <= Umax 
         i = i + 1;
         scatter(2*U,Z(i),'k','filled'); hold on % (Units: D=2t)
         U = U + Ustep;
@@ -119,28 +126,26 @@ function plot_Uline(Z,I,beta,Ustep)
     ylabel('$Z = M/M^*$','Interpreter','latex')
 end
 
-function plot_Tline(Z,I,U,Ustep)
+function plot_Tline(Z,I,U,Tmin,Tstep,Tmax)
     figure("Name",'T-driven MIT')
-    i=0; T = 10^(-6);
-    while T <= 0.05
+    i=0; T = Tmin;
+    while T <= Tmax
         i = i + 1;
         scatter(T,Z(i),'k','filled'); hold on
-        T = T + Ustep;
+        T = T + Tstep;
     end
     title(sprintf('IPT  |  Quasiparticle weight at U/t = %f',2*U)) % (Units: D=2t)
     xlabel('$T$','Interpreter','latex')
     ylabel('$Z = M/M^*$','Interpreter','latex')
 end
 
-function plot_phase_diagram(order_parameter,Ustep,Tstep)
-    figure("Name",'Phase Diagram')
-    X = 0:Ustep:5;
-    Y = 10^(-6):Tstep:0.05;
-    Z = order_parameter;
-    % Remove machine zeros
-    Z(Z<10^(-5)) = 0;
+function plot_phase_diagram(marker,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
+    X = Umin:Ustep:Umax;
+    Y = Tmin:Tstep:Tmax;
+    Z = marker;
     % Surface plot
-    surf(X,Y,Z);
+    figure("Name",'Phase Diagram [surface]')
+    surf(X,Y,Z); colormap('winter')
 end
 
 function plot_spectral(w,gloc,sloc,U,beta)

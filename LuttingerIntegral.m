@@ -18,6 +18,6 @@ w_  = w(1:end-1);
 g_  = gloc(1:end-1);
 integrand  = smoothdata(imag(g_.*ds));
 I = 1/pi*(dw*sum(integrand));
-plot(w_,integrand);
+%plot(w_,integrand);
 end
 

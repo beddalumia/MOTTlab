@@ -13,6 +13,8 @@ A fancy example of what you can obtain running some simulation within the dMFTla
 :-------------------------:|:-------------------------:
 
 # TODO
-- [ ] Insert a "restarting" protocol for full phase diagram spans. The gloc0=0 condition appers to be too weak to obtain accurate UC1 lines.  
-- [ ] Compute the Luttinger Integral, as defined in `Phys. Rev. B 102, 081110(R)` and `J. Phys.: Cond Mat 28 025601`. Since it appears to be quantized it could become the perfect _flag_ for phase diagrams; much better than Z. UPDATE: Luttinger Theorem now works for the FL phase *only*; the MI quantized result for now is missing, for it arises from the nonanalytic Mott pole, which needs for sure a careful numerical treatment.  
-- [ ] An actual good MI vs FL marker could be just Im[Sigma(0)] (much sensible, very inexpensive), so we might substitute Z with it in the end...
+- [ ] Insert a "restarting" protocol for full phase diagram spans. The gloc0=0 condition appers to be too weak to obtain accurate UC1 lines. 
+- [x] Compute a MIvsFL marker based on the divergence of Im[Sigma(0)] (much sensible, very inexpensive), so to obtain sharper phase diagrams with respect to the Z-derived ones.  
+ At the moment we implement the "strenght of correlations", S = norm[Sigma(0)-Sigma_HF], as defined in `PRL 114 185701`, with actual neat results: the marker is almost zero accross the whole FL phase and starts decreasing fast in the Mott insulator.
+- [ ] Compute the Luttinger Integral, as defined in `PRB 102 081110(R)`. Since it appears to be quantized it could become the definitive _flag_ for phase diagrams; much better than Z or S for it is an _integer_.  
+UPDATE: Luttinger Theorem currently works for the FL phase *only*; the MI integer result for now is missing, for it arises from the nonanalytic Mott pole in the self-energy, which requires the most careful numerical treatment.  
