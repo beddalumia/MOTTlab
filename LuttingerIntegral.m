@@ -4,7 +4,7 @@
 % All rights reserved.
 
 function I = LuttingerIntegral(w,Sigma_loc,gloc)
-%% LuttingerIntegral computes the sum-rule, as defined in PRB 102 081110
+%% Computes the Luttinger sum-rule, as defined in PRB 102 081110
 %  Input:
 %       w           : real valued array, \omega domain
 %       Sigma_loc   : complex valued array, \Sigma(\omega) function
@@ -17,6 +17,6 @@ dSigma_Neg = dSigma(w<=0);
 G_Neg = gloc(w<=0);
 integrand = imag(G_Neg.*dSigma_Neg);
 I = 2/pi*(dw*sum(integrand));
-plot(w(w<=0),integrand);
+%plot(w(w<=0),integrand);
 end
 
