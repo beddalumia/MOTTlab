@@ -7,14 +7,14 @@ clear all; clc
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 3;               % On-site Repulsion    } Overriden if PhaseDiagram
+U    = 6;               % On-site Repulsion    } Overriden if PhaseDiagram
 beta = 10^3;            % Inverse Temperature  } flag is set to true...
 
 %% INPUT: Boolean Flags
-MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
+MottBIAS     = 1;       % Changes initial guess of gloc (strongly favours Mott phase)
 Uline        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 Tline        = 0;       % Takes and fixes the given U value and performs a T-driven line
-UTscan       = 1;       % Ignores both given U and beta values and builds a full phase diagram
+UTscan       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 DoSPECTRAL   = 0;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all* the figures
 
