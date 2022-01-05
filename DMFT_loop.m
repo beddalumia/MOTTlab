@@ -3,7 +3,7 @@
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
 
-function [gloc,Sigma] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
+function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %% DMFT_LOOP Single band Bethe lattice at half filling. Using IPT.
 %
 %%    Parameters
@@ -31,7 +31,7 @@ function [gloc,Sigma] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %     -------
 %     gloc  : complex 1D ndarray
 %             DMFT iterated (converged) local Green's function
-%     Sigma : complex 1D ndarray
+%     sloc  : complex 1D ndarray
 %             DMFT iterated (converged) self-energy
 
 %% Iterated Perturbation Theory (IPT)
@@ -56,9 +56,9 @@ DoLOOP = true;
             Nyquist = length(isi)*4;
             H = hilbert(isi,Nyquist);
             hsi = imag(-H(1:length(isi)));
-            Sigma = hsi + 1i * isi;
+            sloc = hsi + 1i * isi;
         % Semicircular Hilbert Transform ( != hilbert internal function )
-            new_gloc = BetheHilbert(w-Sigma,D);
+            new_gloc = BetheHilbert(w-sloc,D);
         % Mixing (for convergence stability purposes)
             old_gloc = gloc;
             gloc = mix*new_gloc+(1-mix)*old_gloc; % D is the DOS "radius"
@@ -75,12 +75,15 @@ DoLOOP = true;
             end
 
     end
-    if SelfCons == true
-        fprintf('\nDMFT has converged after %d steps\n', counter);
-    else
-        fprintf('\nDMFT has *not* converged after %d steps\n', counter);
+    if(~quiet)
+        fprintf('\n');
     end
-    fprintf('> error = %f\n',E);
+    if SelfCons == true
+        fprintf('DMFT has converged after %d steps\n', counter);
+    else
+        fprintf('DMFT has *not* converged after %d steps\n', counter);
+    end
+    fprintf('> error = %f\n\n',E);
 %% Theoretical Background at:
 %  http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf
 end
