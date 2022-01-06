@@ -3,7 +3,7 @@ function map = phase_diagram(marker,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
     Y = Tmin:Tstep:Tmax;
     Z = marker;
     % Surface plot
-    map = figure("Name",'Phase Diagram')
+    map = figure("Name",'Phase Diagram');
     surf(X,Y,Z); colormap('winter')
     title(sprintf('IPT  |  (U,T) Phase-Diagram'))
     xlabel('$U/t$','Interpreter','latex')

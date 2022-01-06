@@ -1,5 +1,5 @@
 function line = Uline(Z,beta,Umin,Ustep,Umax)
-    line = figure("Name",'U-driven MIT')
+    line = figure("Name",'U-driven MIT');
     i=0; U = Umin;
     while U <= Umax 
         i = i + 1;

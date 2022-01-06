@@ -24,6 +24,7 @@ mloop = 1000;           % Max number of DMFT iterations
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^12;           % Energy resolution in real-frequency axis
+wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.09;           % Hubbard U incremental step for phase diagrams
 Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
@@ -37,21 +38,21 @@ dt    = 0.05;           % Frame duration in seconds (for GIF plotting)
 %% Init
 
 % Frequency Values
-w = linspace(-6,6,wres); 
+w = linspace(-wcut,wcut,wres); 
 
 % Initial guess for the local Green's function
 if MottBIAS
    gloc_0 = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   gloc_0 = BetheHilbert(w + 10^(-3)*1i,D); % D is the DOS "radius"
+   gloc_0 = phys.BetheHilbert(w + 10^(-3)*1i,D); % D is the DOS "radius"
 end
 
 %% Single (U,T) point
 fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta)
 [gloc,sloc] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err);
-Z = Zweight(w,sloc)
-I = LuttingerIntegral(w,sloc,gloc)
-S = -norm(sloc(round(wres/2)+1)-sloc(wres))
+Z = phys.Zweight(w,sloc)
+I = phys.LuttingerIntegral(w,sloc,gloc)
+S = phys.CorrelationStrenght(w,sloc)
 if(DoPLOT && DoSPECTRAL)
     [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta)
 end
@@ -65,9 +66,9 @@ if Uline
         i = i + 1;
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
-        Z(i) = Zweight(w,sloc{i});
-        I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
-        S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
+        Z(i) = phys.Zweight(w,sloc{i});
+        I(i) = phys.LuttingerIntegral(w,sloc{i},gloc{i});
+        S(i) = phys.CorrelationStrenght(w,sloc{i});
         U = U + Ustep;
     end
     if(DoPLOT)
@@ -88,9 +89,9 @@ if Tline
         i = i + 1; beta = 1/T;
         fprintf('< T = %f\n',T);
         [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
-        Z(i) = Zweight(w,sloc{i});
-        I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
-        S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
+        Z(i) = phys.Zweight(w,sloc{i});
+        I(i) = phys.LuttingerIntegral(w,sloc{i},gloc{i});
+        S(i) = phys.CorrelationStrenght(w,sloc{i});
         T = T + Tstep;
     end
     if(DoPLOT)
@@ -115,9 +116,9 @@ if UTscan
             fprintf('< U = %f, T = %f\n',U, T);
             [gloc{i,j},sloc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
             %restart_gloc = gloc{i,j};
-            Z(i,j) = Zweight(w,sloc{i,j});
-            I(i,j) = -LuttingerIntegral(w,sloc{i,j},gloc{i,j});
-            S(i,j) = -norm(sloc{i,j}(round(wres/2)+1)-sloc{i,j}(wres));
+            Z(i,j) = phys.Zweight(w,sloc{i,j});
+            I(i,j) = phys.LuttingerIntegral(w,sloc{i,j},gloc{i,j});
+            S(i,j) = phys.CorrelationStrenght(w,sloc{i,j});
             U = U + Ustep;
         end
         T = T + Tstep; 

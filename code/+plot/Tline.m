@@ -1,5 +1,5 @@
 function line = Tline(Z,U,Tmin,Tstep,Tmax)
-    line = figure("Name",'T-driven MIT')
+    line = figure("Name",'T-driven MIT');
     i=0; T = Tmin;
     while T <= Tmax
         i = i + 1;

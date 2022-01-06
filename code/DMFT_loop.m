@@ -43,7 +43,7 @@ quiet = strcmp(pmode,'quiet');
 
 dw = w(2)-w(1);
 eta = 2i * dw;
-f = FermiDirac(w, beta);
+f = phys.FermiDirac(w, beta);
 counter = 0;
 SelfCons = false;
 DoLOOP = true;
@@ -56,14 +56,14 @@ DoLOOP = true;
         % Enforce particle-hole and half-filling
             A0 = 0.5 * (A0 + flip(A0)); % flip([1 2 3]) == [3 2 1] 
         % 2nd order Perturbation Theory (SOPT)
-            isi = SOPT(A0,f,U)*dw^2;
+            isi = phys.SOPT(A0,f,U)*dw^2;
         % Kramers-Kronig relation, using built-in FFT (hilbert subroutine)
             Nyquist = length(isi)*4;
             H = hilbert(isi,Nyquist);
             hsi = imag(-H(1:length(isi)));
             sloc = hsi + 1i * isi;
         % Semicircular Hilbert Transform ( != hilbert internal function )
-            new_gloc = BetheHilbert(w-sloc,D);
+            new_gloc = phys.BetheHilbert(w-sloc,D);
         % Mixing (for convergence stability purposes)
             old_gloc = gloc;
             gloc = mix*new_gloc+(1-mix)*old_gloc; % D is the DOS "radius"
