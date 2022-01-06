@@ -24,7 +24,7 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %             Mixing parameter for iteration updates
 %     err   : float \in [0,1]
 %             Convergence threshold for self-consistency
-%     pmode : string, optional [default: 'quiet']
+%     pmode : string, optional [default: ~'quiet']
 %             If 'quiet' deactivates loop-by-loop prints
 % 
 %%    Returns
@@ -35,7 +35,7 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %             DMFT iterated (converged) self-energy
 
 if(~exist('pmode','var'))
-    pmode = 'quiet';
+    pmode = 'notquiet';
 end
 quiet = strcmp(pmode,'quiet');
 
