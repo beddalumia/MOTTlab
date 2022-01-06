@@ -3,21 +3,21 @@
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
 
-clear all; clc
+clear variables; clc
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 5;               % On-site Repulsion    } Overriden if PhaseDiagram
-beta = 50;              % Inverse Temperature  } flag is set to true...
+U    = 5;               % On-site Repulsion
+beta = 50;              % Inverse Temperature
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-Uline        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+Uline        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 Tline        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTscan       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 DoSPECTRAL   = 1;       % Controls plotting of spectral functions
-DoPLOT       = 0;       % Controls plotting of *all static* figures
-DoGIF        = 1;       % Controls plotting of *animated* figures
+DoPLOT       = 1;       % Controls plotting of *all static* figures
+DoGIF        = 0;       % Controls plotting of *animated* figures
 
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
@@ -48,12 +48,12 @@ end
 
 %% Single (U,T) point
 fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta)
-[gloc,sloc] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,false);
+[gloc,sloc] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err);
 Z = Zweight(w,sloc)
 I = LuttingerIntegral(w,sloc,gloc)
 S = -norm(sloc(round(wres/2)+1)-sloc(wres))
 if(DoPLOT && DoSPECTRAL)
-    [DOS,SELF_ENERGY] = plotter.spectral_frame(w,gloc,sloc,U,beta,true)
+    [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta)
 end
 
 if Uline
@@ -63,18 +63,18 @@ if Uline
     i = 0; U = Umin; 
     while U <= Umax 
         i = i + 1;
-        fprintf('< U = %f\n',U);
-        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
+        fprintf('< U = %f\n',U); quiet = true;
+        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
         Z(i) = Zweight(w,sloc{i});
         I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
         S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
         U = U + Ustep;
     end
     if(DoPLOT)
-        u_span = plotter.Uline(Z,beta,Umin,Ustep,Umax)
+        u_span = plot.Uline(Z,beta,Umin,Ustep,Umax)
     end
     if(DoGIF && DoSPECTRAL)
-        plotter.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,dt)
+        plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,dt)
     end
 
 end
@@ -86,18 +86,18 @@ if Tline
     i = 0; T = Tmin;
     while T <= Tmax 
         i = i + 1; beta = 1/T;
-        fprintf('< T = %f\n',T);
-        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
+        fprintf('< T = %f\n',T); quiet = true;
+        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
         Z(i) = Zweight(w,sloc{i});
         I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
         S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
         T = T + Tstep;
     end
     if(DoPLOT)
-        t_span = plotter.Tline(Z,U,Tmin,Tstep,Tmax)
+        t_span = plot.Tline(Z,U,Tmin,Tstep,Tmax)
     end
     if(DoGIF && DoSPECTRAL)
-        plotter.spectral_gif(w,gloc,sloc,U,Tmin:Tstep:Tmax,dt)
+        plot.spectral_gif(w,gloc,sloc,U,Tmin:Tstep:Tmax,dt)
     end
 end
 
@@ -112,8 +112,8 @@ if UTscan
         U = Umin; 
         while U <= Umax  
             j = j + 1; beta = 1/T;
-            fprintf('< U = %f, T = %f\n',U, T);
-            [gloc{i,j},sloc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,true);
+            fprintf('< U = %f, T = %f\n',U, T); quiet = true;
+            [gloc{i,j},sloc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
             %restart_gloc = gloc{i,j};
             Z(i,j) = Zweight(w,sloc{i,j});
             I(i,j) = -LuttingerIntegral(w,sloc{i,j},gloc{i,j});
@@ -123,7 +123,7 @@ if UTscan
         T = T + Tstep; 
     end
     if(DoPLOT)
-        phasemap = plotter.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
+        phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
     end
 end
  

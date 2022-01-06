@@ -24,7 +24,7 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %             Mixing parameter for iteration updates
 %     err   : float \in [0,1]
 %             Convergence threshold for self-consistency
-%     quiet : logical
+%     quiet : logical, optional [default: false]
 %             If true deactivates loop-by-loop prints
 % 
 %%    Returns
@@ -33,6 +33,10 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %             DMFT iterated (converged) local Green's function
 %     sloc  : complex 1D ndarray
 %             DMFT iterated (converged) self-energy
+
+if(~exist('quiet','var'))
+    quiet = false;
+end
 
 %% Iterated Perturbation Theory (IPT)
 

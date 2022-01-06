@@ -5,8 +5,11 @@ function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,show)
 %  sloc : array of Sigma_loc spectral values [complex]
 %  U    : single Hubbard-U value [float]
 %  beta : single inverse-temperature value [float]
-%  show : boolean flag to set figures visible
+%  show : boolean flag to set figures visible [OPTIONAL, default: true]
 %  ------------------------------------------------------------------------
+    if(~exist('show','var'))
+        show = true;
+    end
     DOS = figure("Name",'Spectral Function (DOS)','Visible','off');
     if(show)
         set(DOS,'Visible', 'on');
