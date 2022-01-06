@@ -14,7 +14,6 @@ function I = LuttingerIntegral(w,sloc,gloc)
 %         = \frac{1}{\pi}\Im\int_{-\infty}^{\infty}dwG_loc(w)d\Sigma(w)/dw
 dw  = w(2)-w(1);
 ds  = diff(sloc);
-w_  = w(1:end-1);
 g_  = gloc(1:end-1);
 integrand  = smoothdata(imag(g_.*ds));
 I = 1/pi*(dw*sum(integrand));

@@ -63,8 +63,8 @@ if Uline
     i = 0; U = Umin; 
     while U <= Umax 
         i = i + 1;
-        fprintf('< U = %f\n',U); quiet = true;
-        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
+        fprintf('< U = %f\n',U);
+        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
         Z(i) = Zweight(w,sloc{i});
         I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
         S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
@@ -86,8 +86,8 @@ if Tline
     i = 0; T = Tmin;
     while T <= Tmax 
         i = i + 1; beta = 1/T;
-        fprintf('< T = %f\n',T); quiet = true;
-        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
+        fprintf('< T = %f\n',T);
+        [gloc{i},sloc{i}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
         Z(i) = Zweight(w,sloc{i});
         I(i) = -LuttingerIntegral(w,sloc{i},gloc{i});
         S(i) = -norm(sloc{i}(round(wres/2)+1)-sloc{i}(wres));
@@ -112,8 +112,8 @@ if UTscan
         U = Umin; 
         while U <= Umax  
             j = j + 1; beta = 1/T;
-            fprintf('< U = %f, T = %f\n',U, T); quiet = true;
-            [gloc{i,j},sloc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,quiet);
+            fprintf('< U = %f, T = %f\n',U, T);
+            [gloc{i,j},sloc{i,j}] = DMFT_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
             %restart_gloc = gloc{i,j};
             Z(i,j) = Zweight(w,sloc{i,j});
             I(i,j) = -LuttingerIntegral(w,sloc{i,j},gloc{i,j});

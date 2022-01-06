@@ -3,7 +3,7 @@
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
 
-function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
+function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %% DMFT_LOOP Single band Bethe lattice at half filling. Using IPT.
 %
 %%    Parameters
@@ -24,8 +24,8 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %             Mixing parameter for iteration updates
 %     err   : float \in [0,1]
 %             Convergence threshold for self-consistency
-%     quiet : logical, optional [default: false]
-%             If true deactivates loop-by-loop prints
+%     pmode : string, optional [default: 'quiet']
+%             If 'quiet' deactivates loop-by-loop prints
 % 
 %%    Returns
 %     -------
@@ -34,9 +34,10 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,quiet)
 %     sloc  : complex 1D ndarray
 %             DMFT iterated (converged) self-energy
 
-if(~exist('quiet','var'))
-    quiet = false;
+if(~exist('pmode','var'))
+    pmode = 'quiet';
 end
+quiet = strcmp(pmode,'quiet');
 
 %% Iterated Perturbation Theory (IPT)
 

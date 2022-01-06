@@ -15,7 +15,7 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             U = Uvec(i);
             beta = 1/Tvec;
             % Build the plot
-            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,false);
+            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
             % Capture the plot as an image 
             imDOS = print(DOS,'-RGBImage');
             imSE = print(SE,'-RGBImage'); 
@@ -43,7 +43,7 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             U = Uvec;
             beta = 1/Tvec(i);
             % Build the plot
-            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,false);
+            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
             % Capture the plot as an image 
             imDOS = print(DOS,'-RGBImage');
             imSE = print(SE,'-RGBImage'); 

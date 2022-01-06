@@ -1,15 +1,16 @@
-function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,show)
+function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
 %% Builds nice plots for the spectral functions
-%  w    : array of frequency values [float]
-%  gloc : array of G_loc spectral values [complex]
-%  sloc : array of Sigma_loc spectral values [complex]
-%  U    : single Hubbard-U value [float]
-%  beta : single inverse-temperature value [float]
-%  show : boolean flag to set figures visible [OPTIONAL, default: true]
+%  w     : array of frequency values [float]
+%  gloc  : array of G_loc spectral values [complex]
+%  sloc  : array of Sigma_loc spectral values [complex]
+%  U     : single Hubbard-U value [float]
+%  beta  : single inverse-temperature value [float]
+%  fmode : string flag to set figures visibility [OPTIONAL, default: 'show']
 %  ------------------------------------------------------------------------
-    if(~exist('show','var'))
-        show = true;
+    if(~exist('fmode','var'))
+        fmode = 'show';
     end
+    show = strcmp(fmode,'show');
     DOS = figure("Name",'Spectral Function (DOS)','Visible','off');
     if(show)
         set(DOS,'Visible', 'on');
