@@ -14,26 +14,16 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
         for i = 1:length(Uvec)
             U = Uvec(i);
             beta = 1/Tvec;
-            % Build the plot
+            % Build the plots
             [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
-            % Capture the plot as an image 
-            imDOS = print(DOS,'-RGBImage');
-            imSE = print(SE,'-RGBImage'); 
-            [imDOSind,cmDOS] = rgb2ind(imDOS,256,'nodither');
-            [imSEind,cmSE] = rgb2ind(imSE,256,'nodither');
             % Set filenames
             TitleString = sprintf('beta%d', beta);
             DosName = append('uDOS_',TitleString,'.gif');
             SigmaName = append('uSigma_',TitleString,'.gif');
-            % Write to the GIF files 
-            if i == 1 
-               imwrite(imDOSind,cmDOS,DosName,'gif', 'Loopcount',inf,'DelayTime',dt);
-               imwrite(imSEind,cmSE,SigmaName,'gif', 'Loopcount',inf,'DelayTime',dt);
-            else 
-               imwrite(imDOSind,cmDOS,DosName,'gif','WriteMode','append','DelayTime',dt);
-               imwrite(imSEind,cmSE,SigmaName,'gif','WriteMode','append','DelayTime',dt);
-            end
-            fprintf('Added %d-th frame of %d\n',i,length(Uvec));
+            % Generate and write the GIF frames 
+            push_gif_frame(DosName,i,length(Uvec),dt,DOS);
+            push_gif_frame(SigmaName,i,length(Uvec),dt,SE);
+            % Close the figures
             close(DOS);
             close(SE);
         end
@@ -42,32 +32,45 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
         for i = 1:length(Tvec)
             U = Uvec;
             beta = 1/Tvec(i);
-            % Build the plot
+            % Build the plots
             [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
-            % Capture the plot as an image 
-            imDOS = print(DOS,'-RGBImage');
-            imSE = print(SE,'-RGBImage'); 
-            [imDOSind,cmDOS] = rgb2ind(imDOS,256,'nodither');
-            [imSEind,cmSE] = rgb2ind(imSE,256,'nodither');
             % Set filenames
             TitleString = sprintf('U%f', U);
             DosName = append('betaDOS_',TitleString,'.gif');
             SigmaName = append('betaSigma_',TitleString,'.gif');
-            % Write to the GIF files 
-            if i == 1 
-               imwrite(imDOSind,cmDOS,DosName,'gif', 'Loopcount',inf,'DelayTime',dt);
-               imwrite(imSEind,cmSE,SigmaName,'gif', 'Loopcount',inf,'DelayTime',dt);
-            else 
-               imwrite(imDOSind,cmDOS,DosName,'gif','WriteMode','append','DelayTime',dt);
-               imwrite(imSEind,cmSE,SigmaName,'gif','WriteMode','append','DelayTime',dt);
-            end 
-            fprintf('Added %d-th frame of %d\n',i,length(Tvec));
+            % Generate and write the GIF frames 
+            push_gif_frame(DosName,i,length(Tvec),dt,DOS);
+            push_gif_frame(SigmaName,i,length(Tvec),dt,SE);
+            % Close the figures
             close(DOS);
             close(SE);
         end
     end
 end 
    
-   
+function push_gif_frame(gifname,iframe,nframe,dt,infig)
+% gifname   :   filename for the gif, should end with .gif
+% iframe    :   id number of the given frame, as an integer
+% nframe    :   total number of expected frames, as an integer
+% dt        :   duration for the given frame, in seconds
+% infig     :   optional handle for the figure to print
+                                                        if nargin < 4
+                                                           infig = gcf;
+                                                        end        
+     % Capture the plot as an image
+     im = print(infig,'-RGBImage');
+     % Suitable conversion
+     [ind,cm] = rgb2ind(im,256,'nodither');
+     % Write to the GIF file
+     if iframe == 1
+        imwrite(ind,cm,gifname,'gif','Loopcount',inf,'DelayTime',dt);
+     else
+        imwrite(ind,cm,gifname,'gif','WriteMode','append','DelayTime',dt);
+     end
+     % Write info to stdout
+     info = sprintf('Added %d-th frame of %d to ',iframe,nframe);
+     info = [info,'<',gifname,'>','\n'];
+     fprintf(info);
+end
    
     
