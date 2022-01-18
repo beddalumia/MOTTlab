@@ -2,5 +2,6 @@
 * text=auto
 # Language override for damn matlab syntax recognition
 *.m linguist-language=MATLAB
-# Exclude jupyter-notebooks from linguist statistics
+# Exclude legacy code from linguist statistics
 *.ipynb linguist-vendored=true
+*.f     linguist-vendored=true

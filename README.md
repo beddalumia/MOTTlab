@@ -1,5 +1,5 @@
 ## What `MOTTlab` is
-A didactic/explorative implementation of (real axis) IPT-based dynamical mean-field theory for the half-filled Mott-Hubbard transition on the Bethe lattice, within MATLAB.
+A didactic/explorative implementation of (real axis) IPT-based dynamical mean-field theory for the half-filled Mott-Hubbard transition on the Bethe lattice, within pure MATLAB.
 
 ## What you can get out of it
 Here we present a few examples of what you can obtain spending some time on the `MOTTlab`.
