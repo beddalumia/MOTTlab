@@ -1,10 +1,6 @@
-%% BSD 3-Clause License
-% 
-% Copyright (c) 2020, Gabriele Bellomia
-% All rights reserved.
-
-function I = LuttingerIntegral(w,sloc,gloc)
+function [I,Lfig] = LuttingerIntegral(w,sloc,gloc)
 %% Computes the Luttinger sum-rule, as defined in PRB 102 081110
+%
 %  Input:
 %       w           : real valued array, \omega domain
 %       sloc        : complex valued array, \Sigma(\omega) function
@@ -12,11 +8,24 @@ function I = LuttingerIntegral(w,sloc,gloc)
 %  Output:
 %       I = \frac{2}{\pi}\Im\int_{-\infty}^{0} dw G_loc(w) d\Sigma(w) / dw
 %         = \frac{1}{\pi}\Im\int_{-\infty}^{\infty}dwG_loc(w)d\Sigma(w)/dw
-dw  = w(2)-w(1);
-ds  = diff(sloc);
+%
+%% BSD 3-Clause License
+% 
+%  Copyright (c) 2020, Gabriele Bellomia
+%  All rights reserved.
+                                                             global DoDEBUG
+ds  = diff(sloc); % dSigma -> already eliminates dw!
 g_  = gloc(1:end-1);
-integrand  = smoothdata(imag(g_.*ds));
-I = 1/pi*(dw*sum(integrand));
-%plot(w_,integrand);
+integrand  = imag(g_.*ds);
+I = 1/pi*sum(integrand); 
+I = abs(I); % J. Phys.: Condens. Matter 28 (2016) 025601
+                                                                 if DoDEBUG
+Lfig = figure("Name",'Luttinger integrand','Visible','off');
+plot(w(1:end-1),integrand);
+xlabel('\omega');
+ylabel('Im[G(\omega)\partial\Sigma/\partial\omega]');
+ylim([-0.1,0.2]);
+                                                                 end
 end
+
 
