@@ -1,8 +1,3 @@
-%% BSD 3-Clause License
-% 
-% Copyright (c) 2020, Gabriele Bellomia
-% All rights reserved.
-
 function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %% DMFT_LOOP Single band Bethe lattice at half filling. Using IPT.
 %
@@ -33,6 +28,15 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %             DMFT iterated (converged) local Green's function
 %     sloc  : complex 1D ndarray
 %             DMFT iterated (converged) self-energy
+%
+%% Theoretical Background at:
+%
+%  http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf
+%
+%% BSD 3-Clause License
+%
+%  Copyright (c) 2020, Gabriele Bellomia
+%  All rights reserved.
 
 if(~exist('pmode','var'))
     pmode = 'notquiet';
@@ -89,6 +93,8 @@ DoLOOP = true;
         fprintf('DMFT has *not* converged after %d steps\n', counter);
     end
     fprintf('> error = %f\n\n',E);
-%% Theoretical Background at:
-%  http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf
 end
+
+
+
+

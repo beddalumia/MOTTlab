@@ -1,5 +1,6 @@
 function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
-%% Builds nice plots for the spectral functions
+%% SPECTRAL_FRAME
+%  Builds nice plots for the spectral functions
 %  w     : array of frequency values [float]
 %  gloc  : array of G_loc spectral values [complex]
 %  sloc  : array of Sigma_loc spectral values [complex]

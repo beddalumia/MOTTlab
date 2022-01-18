@@ -3,7 +3,8 @@
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
 
-clear variables; clc
+clear  variables; clc
+global DoDEBUG
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
