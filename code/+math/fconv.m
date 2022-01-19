@@ -47,6 +47,12 @@ function c = fconv(a, b, shape)
  if shape(1) == 'v' || shape(1) == 'V'   %  shape 'valid'
     c = conv(a, b, shape); return
  end
+ 
+ if isreal(a) && isreal(b)
+    if all(a>=0) && all(b>=0)
+       doABS = true; 
+    end
+ end
     
     Na = length(a);
     Nb = length(b);
@@ -57,8 +63,10 @@ function c = fconv(a, b, shape)
     b = fft(b, Lopt);           % Fastest Fourier transform in the West
     c = a .* b;                 % Fast vectorized scalar product
     c = real(ifft(c, Lopt));    % FFTW's inverse fast Fourier transform
-    c(-abs(c)>-1e-11) = abs(c(-abs(c)>-1e-11));  % Generic handling of machine zeros
-    %c = abs(c);
+    
+ if doABS       % Convolution must preserve semi-definite positivity!
+    c = abs(c);
+ end
     
  if shape(1) == 'f' || shape(1) == 'F'   % shape 'full'
     c = c(1:Lc); return                    
