@@ -19,11 +19,11 @@ UTscan       = 0;       % Ignores both given U and beta values and builds a full
 DoSPECTRAL   = 0;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all static* figures
 DoGIF        = 0;       % Controls plotting of *animated* figures
-DEBUG        = 1;       % Activates debug prints / plots / operations
+DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
-mloop = 110;           % Max number of DMFT iterations 
+mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
