@@ -10,6 +10,8 @@ global DoDEBUG
 D    = 1;               % Bandwidth
 U    = 5;               % On-site Repulsion
 beta = 1e3;             % Inverse Temperature
+U    = 0;               % On-site Repulsion
+beta = 1e6;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
