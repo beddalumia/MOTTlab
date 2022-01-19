@@ -57,6 +57,7 @@ function c = fconv(a, b, shape)
     b = fft(b, Lopt);           % Fastest Fourier transform in the West
     c = a .* b;                 % Fast vectorized scalar product
     c = real(ifft(c, Lopt));    % FFTW's inverse fast Fourier transform
+    c = abs(c);                 % CRUCIAL FIX -> WE DO NOT WANT NEGATIVIES!
     
  if shape(1) == 'f' || shape(1) == 'F'   % shape 'full'
     c = c(1:Lc); return                    

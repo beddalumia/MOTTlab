@@ -83,13 +83,13 @@ if DEBUG && FAST && counter > 99
 end
         % Semicircular Hilbert Transform ( != hilbert internal function )
             new_gloc = phys.BetheHilbert(w-sloc,D);
-% if DEBUG && FAST && counter > 99
-%             fig = figure('Visible', 'off');
-%             plot(w,real(new_gloc)); hold on
-%             plot(w,imag(new_gloc));
-%             plot.push_frame('gloc.gif',counter-99,mloop,0.1,fig);
-%             close(fig);
-% end
+if DEBUG && FAST && counter > 99
+            fig = figure('Visible', 'off');
+            plot(w,real(new_gloc)); hold on
+            plot(w,imag(new_gloc));
+            plot.push_frame('gloc.gif',counter-99,mloop,0.1,fig);
+            close(fig);
+end
         % Mixing (for convergence stability purposes)
             old_gloc = gloc;
             gloc = mix*new_gloc+(1-mix)*old_gloc; % D is the DOS "radius"
