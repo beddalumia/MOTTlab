@@ -13,19 +13,19 @@ function [I,Lfig] = LuttingerIntegral(w,sloc,gloc)
 % 
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
-                                                             global DoDEBUG
+                                                               global DEBUG
 ds  = diff(sloc); % dSigma -> already eliminates dw!
 g_  = gloc(1:end-1);
 integrand  = imag(g_.*ds);
 I = 1/pi*sum(integrand); 
 I = abs(I); % J. Phys.: Condens. Matter 28 (2016) 025601
-                                                                 if DoDEBUG
+                                                                   if DEBUG
 Lfig = figure("Name",'Luttinger integrand','Visible','off');
 plot(w(1:end-1),integrand);
 xlabel('\omega');
 ylabel('Im[G(\omega)\partial\Sigma/\partial\omega]');
 ylim([-0.1,0.2]);
-                                                                 end
+                                                                   end
 end
 
 

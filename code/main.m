@@ -4,12 +4,10 @@
 % All rights reserved.
 
 clear  variables; clc
-global DoDEBUG
+global DEBUG FAST
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 5;               % On-site Repulsion
-beta = 1e3;             % Inverse Temperature
 U    = 0;               % On-site Repulsion
 beta = 1e6;             % Inverse Temperature
 
@@ -21,7 +19,8 @@ UTscan       = 0;       % Ignores both given U and beta values and builds a full
 DoSPECTRAL   = 0;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all static* figures
 DoGIF        = 0;       % Controls plotting of *animated* figures
-DoDEBUG      = 0;       % Activates debug prints / plots / operations
+DEBUG        = 0;       % Activates debug prints / plots / operations
+FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 

@@ -12,14 +12,14 @@ function [Z,Zfig] = Zweight(w,sloc)
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
 
-                                                             global DoDEBUG
+                                                               global DEBUG
 
 w_th = 0.01; % Threshold to define proper fitting domain! (to be improved)
 xToFit = w(abs(w)<=w_th);
 yToFit = real(sloc(abs(w)<=w_th));
 LinearModel = polyfit(xToFit,yToFit,1);
 
-                                                                 if DoDEBUG
+                                                                   if DEBUG
 %% debug / fine-tuning of w_th
 yModel = LinearModel(1)*w + LinearModel(2);                             
 Zfig = figure("Name",'Debug on Z determination','Visible','off');               
@@ -30,7 +30,7 @@ legend('Re\Sigma(\omega)','d/dw[Re\Sigma]@\omega=0')
 a = unique(min(real(sloc)));
 b = unique(max(real(sloc)));
 if a<b, ylim([a,b]); end                                
-                                                                 end
+                                                                   end
 
 %% Nozieres Theorem: Re{\Sigma(w)} = A + (1-1/Z)w + O(w^3)
 Z = 1/(1-LinearModel(1)); 
