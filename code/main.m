@@ -8,22 +8,22 @@ global DEBUG FAST
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 0;               % On-site Repulsion
+U    = 4;               % On-site Repulsion
 beta = 1e6;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-Uline        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+Uline        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 Tline        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTscan       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 DoSPECTRAL   = 0;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all static* figures
 DoGIF        = 0;       % Controls plotting of *animated* figures
-DEBUG        = 0;       % Activates debug prints / plots / operations
+DEBUG        = 1;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
-mloop = 1000;           % Max number of DMFT iterations 
+mloop = 130;            % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis

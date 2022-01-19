@@ -37,7 +37,7 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
-
+                                                          global DEBUG FAST
 if(~exist('pmode','var'))
     pmode = 'notquiet';
 end
@@ -60,14 +60,36 @@ DoLOOP = true;
         % Enforce particle-hole and half-filling
             A0 = 0.5 * (A0 + flip(A0)); % flip([1 2 3]) == [3 2 1] 
         % 2nd order Perturbation Theory (SOPT)
+if DEBUG && FAST && counter > 99
+            [isi,dbf1,dbf2] = phys.SOPT(A0,f,U);  isi = isi*dw^2;
+            plot.push_frame('App.gif' ,counter-99,mloop,0.1,dbf1);
+            plot.push_frame('Appp.gif',counter-99,mloop,0.1,dbf2);
+            close(dbf1,dbf2);
+else
             isi = phys.SOPT(A0,f,U)*dw^2;
+end
         % Kramers-Kronig relation, using built-in FFT (hilbert subroutine)
             Nyquist = length(isi)*4;
             H = hilbert(isi,Nyquist);
             hsi = imag(-H(1:length(isi)));
             sloc = hsi + 1i * isi;
+if DEBUG && FAST && counter > 99
+            fig = figure('Visible', 'off');
+            plot(w,real(sloc)); hold on
+            plot(w,imag(sloc));
+            ylim([-100,100]);
+            plot.push_frame('sloc.gif',counter-99,mloop,0.1,fig);
+            close(fig);
+end
         % Semicircular Hilbert Transform ( != hilbert internal function )
             new_gloc = phys.BetheHilbert(w-sloc,D);
+% if DEBUG && FAST && counter > 99
+%             fig = figure('Visible', 'off');
+%             plot(w,real(new_gloc)); hold on
+%             plot(w,imag(new_gloc));
+%             plot.push_frame('gloc.gif',counter-99,mloop,0.1,fig);
+%             close(fig);
+% end
         % Mixing (for convergence stability purposes)
             old_gloc = gloc;
             gloc = mix*new_gloc+(1-mix)*old_gloc; % D is the DOS "radius"
