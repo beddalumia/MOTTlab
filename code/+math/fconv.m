@@ -1,5 +1,5 @@
 function c = fconv(a, b, shape)
-%FCONV Fast convolution of long arrays, exploiting NEXTPOW2 and built-in FFTW wrappers
+%% Fast convolution of long arrays, exploiting NEXTPOW2 and built-in FFTW wrappers
 %
 %   C = FCONV(A, B, SHAPE) convolves vectors A and B. The length of the resulting
 %                          vector is determined by the optional SHAPE tag.
@@ -21,7 +21,7 @@ function c = fconv(a, b, shape)
 %       > if length(A) ~= length(B) by a good amount, you should call indeed
 %         the standard CONV function, for it may be much faster(-) than FCONV.
 % 
-%   See also CONV, NEXTPOW2.
+%   See also CONV, NEXTPOW2, FFT, IFFT.
 %
 %% NOTES:
 %
@@ -48,6 +48,7 @@ function c = fconv(a, b, shape)
     c = conv(a, b, shape); return
  end
  
+ doABS = false;
  if isreal(a) && isreal(b)
     if all(a>=0) && all(b>=0)
        doABS = true; 
@@ -57,29 +58,28 @@ function c = fconv(a, b, shape)
     Na = length(a);
     Nb = length(b);
     
-    Lc = Na + Nb - 1;           % Standard full convolution length
-    Lopt = pow2(nextpow2(Lc));  % FFT OPTIMIZATION TRICK: see doc nextpow2
-    a = fft(a, Lopt);           % Fastest Fourier transform in the West
-    b = fft(b, Lopt);           % Fastest Fourier transform in the West
+    Nc = Na + Nb - 1;           % Standard full convolution length
+    Npow = pow2(nextpow2(Nc));  % FFT OPTIMIZATION TRICK: see doc nextpow2
+    a = fft(a, Npow);           % Fastest Fourier transform in the West
+    b = fft(b, Npow);           % Fastest Fourier transform in the West
     c = a .* b;                 % Fast vectorized scalar product
-    c = real(ifft(c, Lopt));    % FFTW's inverse fast Fourier transform
+    c = real(ifft(c, Npow));    % FFTW's inverse fast Fourier transform
     
  if doABS       % Convolution must preserve semi-definite positivity!
     c = abs(c);
  end
     
  if shape(1) == 'f' || shape(1) == 'F'   % shape 'full'
-    c = c(1:Lc); return                    
+    c = c(1:Nc); return                    
  end   
     
  if shape(1) == 's' || shape(1) == 'S'   % shape 'same'
-    c = c(1:Lc);
-    Ncut = (Lc-Na)/2;
+    c = c(1:Nc);
+    Ncut = (Nc-Na)/2;
     c = c(1+ceil(Ncut):end-floor(Ncut)); return                        
  end
    
 end
-
 
 
 

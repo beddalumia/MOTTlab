@@ -1,14 +1,14 @@
 ## What `MOTTlab` is
-A didactic/explorative implementation of (real axis) IPT-based dynamical mean-field theory for the half-filled Mott-Hubbard transition on the Bethe lattice, within pure MATLAB.
+An efficient implementation of (real axis) IPT-based dynamical mean-field theory for the half-filled Mott-Hubbard transition on the Bethe lattice, within pure MATLAB.
 
 ## What you can get out of it
-Here we present a few examples of what you can obtain spending some time on the `MOTTlab`.
+Here we present a few examples of what you can obtain fiddling around the `MOTTlab`.
 
-> Characterize the interaction-driven quantum Mott transition through different physical markers, such as the _timeless classic_ quasiparticle renormalization weight _Z<sub>F</sub>_ , or the _quantized_ Luttinger integral _I<sub>L</sub>_, which gives some exotic hints of a topological interpretation.
+> Characterize the interaction-driven quantum Mott transition through different physical markers, such as the _timeless classic_ quasiparticle renormalization weight _Z<sub>F</sub>_ , or the _quantized_ Luttinger integral _I<sub>L</sub>_, getting some exotic hints of a topological interpretation.
 
 ![Mott-Transition-Markers-zeroT](./showcase/ZvsL_beta1e6_wres2e15.svg) 
 
-> Truly visualize what happens at different relevant temperatures by means of the fanciest animations!
+> Truly visualize what happens at different relevant temperatures by means of pretty animations!
 
  Temperature  | DOS | SELF-ENERGY
 :-------------------------:|:-------------------------:|:-------------------------:
@@ -23,7 +23,7 @@ Here we present a few examples of what you can obtain spending some time on the 
 This code has been implemented taking inspiration from these two didactic sources:
 1. http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf ([local copy](docs/haule_IPTtheory_rutgers.pdf))
 2. https://www.cond-mat.de/events/correl19/manuscripts/rozenberg.pdf ([local copy](docs/rozenberg_review_julich.pdf))
-and the hands-on material given therein, in particular a tutorial-intended jupyter notebook provided by Óscar Nájera (available [on his cloud](http://mycore.core-cloud.net/index.php/s/oAz0lIWuBM90Gqt), or [locally](legacy/PYTHON/real_ipt-text_v3.ipynb)) under the BSD 3-Clause License. Here we provide an extensive MATLAB rewrite, augmented by basic phase-diagram workflows, with convergence and self-mixing control, various post-processing tools, finally some exploration of novel material, with explicit references to the relevant research papers. Everything again under BSD 3-Clause License. You can read more about allowed use of this code in the [LICENSE](./LICENSE) file.
+and the hands-on material given therein, in particular a tutorial-intended jupyter notebook provided by Óscar Nájera (available [on his cloud](http://mycore.core-cloud.net/index.php/s/oAz0lIWuBM90Gqt), or [locally](legacy/PYTHON/real_ipt-text_v3.ipynb)) under the BSD 3-Clause License. Here we provide an extensive and efficient MATLAB rewrite, augmented by basic phase-diagram workflows, convergence and self-mixing control, various post-processing tools, finally some exploration of novel material with explicit references to the relevant research papers. Everything yet under the BSD 3-Clause License. You can read more about allowed use of this code in the [LICENSE](./LICENSE) file.
 
 <kbd> © 2020 | Gabriele Bellomia 
 

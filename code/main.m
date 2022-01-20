@@ -3,12 +3,12 @@
 % Copyright (c) 2020, Gabriele Bellomia
 % All rights reserved.
 
-clear  variables; clc
+clearvars; clc;
 global DEBUG FAST
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 4;               % On-site Repulsion
+U    = 1;               % On-site Repulsion
 beta = 1e6;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
@@ -16,7 +16,7 @@ MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott p
 Uline        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 Tline        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTscan       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-DoSPECTRAL   = 0;       % Controls plotting of spectral functions
+DoSPECTRAL   = 1;       % Controls plotting of spectral functions
 DoPLOT       = 1;       % Controls plotting of *all static* figures
 DoGIF        = 0;       % Controls plotting of *animated* figures
 DEBUG        = 0;       % Activates debug prints / plots / operations
@@ -47,7 +47,7 @@ w = linspace(-wcut,wcut,wres);
 if MottBIAS
    gloc_0 = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   gloc_0 = phys.BetheHilbert(w + 10^(-3)*1i,D); % D is the DOS "radius"
+   gloc_0 = phys.BetheLattice(w + 10^(-3)*1i,D); % D is the DOS "radius"
 end
 
 %% Single (U,T) point
@@ -130,7 +130,3 @@ if UTscan
         phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
     end
 end
- 
-
-
-

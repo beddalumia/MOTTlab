@@ -4,7 +4,7 @@
  At the moment we implement the "strenght of correlations", S = norm[Sigma(0)-Sigma_HF], as defined in `PRL 114 185701 (2015)`, with actual neat results: the marker is almost zero accross the whole FL phase and starts increasing fast in the Mott insulator.
 
 - [x] Compute the Luttinger Integral, as defined in `J. Phys.: Condens. Matter 28 (2016) 025601` and `PRB 102 081110(R) (2020)`. Since it appears to be quantized it could become the definitive _flag_ for phase diagrams; much better than Z or S for it is an _integer_.  
-UPDATE: Luttinger Theorem currently works for very low temperatures only. It may well be an inherent limitation (in that case it would be a good marker for low temperature lines, but not phase diagrams). Also note that the quality of the first order step at the transition highly depends on the frequency resolution, so to have sharp boundaries you need to have at least `wres=2^14`, which makes the IPT solver far slower.
+UPDATE: Luttinger Theorem currently works for very low temperatures only. It may well be an inherent limitation (in that case it would be a good marker for low temperature lines, but not phase diagrams). Also note that the quality of the first order step at the transition highly depends on the frequency resolution, so to have sharp boundaries you need to have at least `wres=2^14`, which makes the IPT solver far slower. [solved brilliantly with fast convolutions, see the `optimization` section below]
 
 - [ ] Compute the Local Entanglement Entropy, as defined in `Rev. Mod. Phys. 80, 517 (2008)` (section V.F) and used in `Mod. Phys. Lett. B 2013 27:05` to characterize the MIT on the Bethe lattice. It requires retrieving the double occupancy from the GFs.
 

@@ -37,48 +37,48 @@ function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
-                                                          global DEBUG FAST
+
 if(~exist('pmode','var'))
     pmode = 'notquiet';
 end
 quiet = strcmp(pmode,'quiet');
 
-%% Iterated Perturbation Theory (IPT)
+    %% Iterated Perturbation Theory (IPT)
 
-dw = w(2)-w(1);
-eta = 2i * dw;
-f = phys.FermiDirac(w, beta);
-counter = 0;
-SelfCons = false;
-DoLOOP = true;
+    dw = w(2)-w(1);
+    eta = 2i * dw;
+    f = phys.FermiDirac(w, beta);
+    counter = 0;
+    SelfCons = false;
+    DoLOOP = true;
 
     while DoLOOP == true
-        % Self-consistency
+        
+        % Initial Weiss field
             g0 = 1 ./ (w + eta - 0.25 .* gloc);
+            
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
-        % Enforce particle-hole and half-filling
-            A0 = 0.5 * (A0 + flip(A0)); % flip([1 2 3]) == [3 2 1] 
-        % 2nd order Perturbation Theory (SOPT)
-if DEBUG && FAST && counter > 99
-            [isi,dbf1] = phys.SOPT(A0,f,U);  isi = isi*dw^2;
-            plot.push_frame('App.gif' ,counter-99,mloop,0.1,dbf1);
-            close(dbf1);
-else
+            
+        % Enforce particle-hole and half-filling ( -> stability )
+            A0 = 0.5 * (A0 + flip(A0)); % ( flip(v(1:end))=v(end:1) )
+            
+        % Second Order Perturbation Theory
             isi = phys.SOPT(A0,f,U)*dw^2;
-end
-        % Kramers-Kronig relation, using built-in FFT (hilbert subroutine)
+            
+        % Kramers-Kronig transform, to get the self-energy
             Nyquist = length(isi)*4;
             H = hilbert(isi,Nyquist);
             hsi = imag(-H(1:length(isi)));
-            sloc = hsi + 1i * isi;
-
-        % Semicircular Hilbert Transform ( != hilbert internal function )
-            new_gloc = phys.BetheHilbert(w-sloc,D);
-
-        % Mixing (for convergence stability purposes)
-            old_gloc = gloc;
-            gloc = mix*new_gloc+(1-mix)*old_gloc; % D is the DOS "radius"
+            sloc_test = hsi + 1i * isi;
+            sloc = math.KramersKronig(isi) + 1i.*isi;
+            
+        % Self-Consistency relationship
+            new_gloc = phys.BetheLattice(w-sloc,D); % D is the DOS "radius"
+            
+        % Mixing ( -> stability )
+            old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 
+            
         % Logical Update
             counter = counter + 1;
             E = norm(gloc-old_gloc)/norm(gloc);
@@ -86,23 +86,25 @@ end
                SelfCons = true; 
             end
             DoLOOP = (counter < mloop) && (SelfCons == false);
+            
         % Print Info
             if(~quiet)
             fprintf('DMFT-loop #%d (max %d) has ended\n', counter, mloop);
             end
-
+            
     end
+    
     if(~quiet)
         fprintf('\n');
     end
+    
     if SelfCons == true
         fprintf('DMFT has converged after %d steps\n', counter);
     else
         fprintf('DMFT has *not* converged after %d steps\n', counter);
     end
+    
     fprintf('> error = %f\n\n',E);
+    
 end
-
-
-
 
