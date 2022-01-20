@@ -17,7 +17,30 @@ Here we present a few examples of what you can obtain fiddling around the `MOTTl
 `High T: supercritical MIT` |![Mott-Transition-AnimatedDOS-highT](./showcase/uDOS_beta1.gif) | ![Mott-Transition-AnimatedSIGMA-highT](./showcase/uSigma_beta1.gif)  
 
 ## Dependencies
+I've tried hard to avoid exceeding with the infamous MathWorks add-ons. At the moment the only additional dependence is the [Signal Processing Toolbox](https://it.mathworks.com/products/signal.html), which provides an efficient implementation of the discrete Hilbert transforms, at the earth of the numerical evaluation of the Kramers-Kronig relationships. Nevertheless I provide also a FOSS options, through [GNU Octave](https://www.gnu.org/software/octave/) packages.  
 
+First of all you need to install the main software. The easiest way that I know is through Homebrew (you won't need sudo rights, they just take care of everything):
+
+```
+ brew install octave
+```
+
+Then run an instance of Octave in your shell (just type `octave`) and install the [control package](https://octave.sourceforge.io/control/), by typing:
+
+```
+pkg install -forge control
+```
+Finally proceed to install the [signal package](https://octave.sourceforge.io/signal/index.html), which provides a FOSS implementation<sup>†</sup> of the `hilbert()` function.
+
+<sub>† note that while the MATLAB `fft` family is always built on top of [FFTW](https://www.fftw.org), with Octave you could end up wrapping [FFTPACK](https://www.netlib.org/fftpack/) instead, depending on how your binaries have been built. </sub>
+
+So, running
+
+```
+pkg install -forge signal
+```
+
+you should now be set... enjoy! 
 
 ## Licensing and legacy code
 This code has been implemented taking inspiration from these two didactic sources:

@@ -6,6 +6,10 @@
 clearvars; clc;
 global DEBUG FAST
 
+try
+    pkg load signal     % GNU Octave option
+end
+
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
 U    = 1;               % On-site Repulsion
