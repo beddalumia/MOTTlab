@@ -22,7 +22,7 @@ I've tried hard to avoid exceeding with the infamous MathWorks add-ons. At the m
 First of all you need to install the main software. The easiest way that I know is through Homebrew (you won't need sudo rights, they just take care of everything):
 
 ```
- brew install octave
+brew install octave
 ```
 
 Then run an instance of Octave in your shell (just type `octave`) and install the [control package](https://octave.sourceforge.io/control/), by typing:
@@ -30,24 +30,26 @@ Then run an instance of Octave in your shell (just type `octave`) and install th
 ```
 pkg install -forge control
 ```
-Finally proceed to install the [signal package](https://octave.sourceforge.io/signal/index.html), which provides a FOSS implementation<sup>†</sup> of the `hilbert()` function.
+Finally proceed to install the [signal package](https://octave.sourceforge.io/signal/index.html), which provides a FOSS implementation[^1] of the `hilbert()` function:
 
-<sub>† note that while the MATLAB `fft` family is always built on top of [FFTW](https://www.fftw.org), with Octave you could end up wrapping [FFTPACK](https://www.netlib.org/fftpack/) instead, depending on how your binaries have been built. </sub>
-
-So, running
+[^1]: note that while the MATLAB `fft` family is always built on top of [FFTW](https://www.fftw.org), with Octave you could end up wrapping [FFTPACK](https://www.netlib.org/fftpack/) instead, depending on how your binaries have been built.
 
 ```
 pkg install -forge signal
 ```
 
-you should now be set... enjoy! 
+You should now be set... enjoy! 
 
 ## Licensing and legacy code
-This code has been implemented taking inspiration from these two didactic sources:
-1. http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf ([local copy](docs/haule_IPTtheory_rutgers.pdf))
-2. https://www.cond-mat.de/events/correl19/manuscripts/rozenberg.pdf ([local copy](docs/rozenberg_review_julich.pdf))
-and the hands-on material given therein, in particular a tutorial-intended jupyter notebook provided by Óscar Nájera (available [on his cloud](http://mycore.core-cloud.net/index.php/s/oAz0lIWuBM90Gqt), or [locally](legacy/PYTHON/real_ipt-text_v3.ipynb)) under the BSD 3-Clause License. Here we provide an extensive and efficient MATLAB rewrite, augmented by basic phase-diagram workflows, convergence and self-mixing control, various post-processing tools, finally some exploration of novel material with explicit references to the relevant research papers. Everything yet under the BSD 3-Clause License. You can read more about allowed use of this code in the [LICENSE](./LICENSE) file.
+This code has been implemented taking inspiration from these didactic sources:
+1. [Kristjan Haule lecture on lattice vs local SOPT](http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf) ([local copy](docs/haule_IPTtheory_rutgers.pdf)).
+2. [Marcelo Rozenberg lecture on DMFT and the MIT](https://www.cond-mat.de/events/correl19/manuscripts/rozenberg.pdf) ([local copy](docs/rozenberg_review_julich.pdf))
+and the [hands-on material](http://mycore.core-cloud.net/index.php/s/oAz0lIWuBM90Gqt) linked therein, in particular a tutorial-intended [jupyter notebook](legacy/PYTHON/real_ipt-text_v3.ipynb) provided by Óscar Nájera under the BSD 3-Clause License. 
 
-<kbd> © 2020 | Gabriele Bellomia 
+Here we provide an efficient pure MATLAB rewrite of the original real-axis IPT algorithm, complemented by basic phase-diagram workflows, convergence and self-mixing control and various post-processing tools. Further material is being added gradually, with the aim to explore novel research ideas. You can find [here](./ROADMAP.md) a roadmap of the project, with a concise description of each addition and references to the relevant research papers. 
+
+Everything mantains the original BSD 3-Clause License. You can read more about permitted use and conditions in the [LICENSE](./LICENSE) file.
+
+## <kbd> © 2020 | Gabriele Bellomia 
 
 
