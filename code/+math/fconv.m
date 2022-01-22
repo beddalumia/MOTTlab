@@ -48,10 +48,15 @@ function c = fconv(a, b, shape)
     c = conv(a, b, shape); return
  end
  
- doABS = false;
+ ABeq = false;
+ if a == b
+     ABeq = true;
+ end
+ 
+ ABpos = false;
  if isreal(a) && isreal(b)
     if all(a>=0) && all(b>=0)
-       doABS = true; 
+       ABpos = true; 
     end
  end
     
@@ -61,12 +66,16 @@ function c = fconv(a, b, shape)
     Nc = Na + Nb - 1;           % Standard full convolution length
     Npow = pow2(nextpow2(Nc));  % FFT OPTIMIZATION TRICK: see doc nextpow2
     a = fft(a, Npow);           % Fastest Fourier transform in the West
-    b = fft(b, Npow);           % Fastest Fourier transform in the West
+ if ABeq
+    b = a;                      % Avoid second FFT if init a == init b
+ else
+    b = fft(b, Npow);           % Compute second FFT otherwise
+ end
     c = a .* b;                 % Fast vectorized scalar product
     c = real(ifft(c, Npow));    % FFTW's inverse fast Fourier transform
     
- if doABS       % Convolution must preserve semi-definite positivity!
-    c = abs(c);
+ if ABpos       
+    c = abs(c);                 % Enforce semi-definite positive property
  end
     
  if shape(1) == 'f' || shape(1) == 'F'   % shape 'full'
