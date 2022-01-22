@@ -54,14 +54,16 @@ else
    gloc_0 = phys.bethe(w + 10^(-3)*1i,D); % D is the DOS "radius"
 end
 
-%% Single (U,T) point
-fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta)
-[gloc,sloc] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err);
-Z = phys.zetaweight(w,sloc);
-I = phys.luttinger(w,sloc,gloc);
-S = phys.strcorrel(w,sloc);
-if(PLOT && SPECTRAL)
-    [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta);
+if not( ULINE || TLINE || UTSCAN )
+    %% Single (U,T) point
+    fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta)
+    [gloc,sloc] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err);
+    Z = phys.zetaweight(w,sloc);
+    I = phys.luttinger(w,sloc,gloc);
+    S = phys.strcorrel(w,sloc);
+    if(PLOT && SPECTRAL)
+        [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta);
+    end
 end
 
 if ULINE
