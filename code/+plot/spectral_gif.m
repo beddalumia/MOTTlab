@@ -23,8 +23,8 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             DosName = append('uDOS_',TitleString,'.gif');
             SigmaName = append('uSigma_',TitleString,'.gif');
             % Generate and write the GIF frames 
-            push_frame(DosName,i,length(Uvec),dt,DOS);
-            push_frame(SigmaName,i,length(Uvec),dt,SE);
+            plot.push_frame(DosName,i,length(Uvec),dt,DOS);
+            plot.push_frame(SigmaName,i,length(Uvec),dt,SE);
             % Close the figures
             close(DOS);
             close(SE);
@@ -32,12 +32,12 @@ if DoDEBUG
             [~,LI] = phys.LuttingerIntegral(w,gloc{i},sloc{i});
             title(sprintf('IPT  |  DOS @ U/t = %.2f, beta = %d',2*U,beta));
             LName = append('Luttinger_',TitleString,'.gif');
-            push_frame(LName,i,length(Uvec),dt,LI);
+            plot.push_frame(LName,i,length(Uvec),dt,LI);
             close(LI);
             [~,ZF] = phys.Zweight(w,sloc{i});
             title(sprintf('IPT  |  DOS @ U/t = %.2f, beta = %d',2*U,beta));
             ZName = append('Zfit_',TitleString,'.gif');
-            push_frame(ZName,i,length(Uvec),dt,ZF);
+            plot.push_frame(ZName,i,length(Uvec),dt,ZF);
             close(ZF);
 end
         end
@@ -53,8 +53,8 @@ end
             DosName = append('betaDOS_',TitleString,'.gif');
             SigmaName = append('betaSigma_',TitleString,'.gif');
             % Generate and write the GIF frames 
-            push_frame(DosName,i,length(Tvec),dt,DOS);
-            push_frame(SigmaName,i,length(Tvec),dt,SE);
+            plot.push_frame(DosName,i,length(Tvec),dt,DOS);
+            plot.push_frame(SigmaName,i,length(Tvec),dt,SE);
             % Close the figures
             close(DOS);
             close(SE);
