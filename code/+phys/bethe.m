@@ -1,4 +1,4 @@
-function gloc = BetheLattice(zeta,D)
+function gloc = bethe(zeta,D)
 %% SELF-CONSISTENCY relation for the Bethe lattice
 %  
 %  Most generally the DMFT self-consistency relation expresses the local

@@ -1,4 +1,4 @@
-function [gloc,sloc] = DMFT_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
+function [gloc,sloc] = dmft_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %% DMFT_LOOP Single band Bethe lattice at half filling. Using IPT.
 %
 %%    Parameters
@@ -47,34 +47,30 @@ quiet = strcmp(pmode,'quiet');
 
     dw = w(2)-w(1);
     eta = 2i * dw;
-    f = phys.FermiDirac(w, beta);
+    f = phys.fermi(w,beta);
     counter = 0;
-    SelfCons = false;
-    DoLOOP = true;
+    CONVERGED = false;
+    LOOP = true;
 
-    while DoLOOP == true
+    while LOOP
         
-        % Initial Weiss field
+        % Weiss field from local Green's function
             g0 = 1 ./ (w + eta - 0.25 .* gloc);
             
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
             
         % Enforce particle-hole and half-filling ( -> stability )
-            A0 = 0.5 * (A0 + flip(A0)); % ( flip(v(1:end))=v(end:1) )
+            A0 = 0.5 * (A0 + flip(A0)); % [ flip{v(1:end)}=v(end:1) ]
             
-        % Second Order Perturbation Theory
-            isi = phys.SOPT(A0,f,U)*dw^2;
+        % Second Order Perturbation Theory, to get Im(Sigma(w))
+            imsloc = phys.sopt(A0,f,U)*dw^2;
             
-        % Kramers-Kronig transform, to get the self-energy
-            Nyquist = length(isi)*4;
-            H = hilbert(isi,Nyquist);
-            hsi = imag(-H(1:length(isi)));
-            sloc_test = hsi + 1i * isi;
-            sloc = math.KramersKronig(isi) + 1i.*isi;
+        % Kramers-Kronig transform, to get Re(Sigma(w))
+            sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Self-Consistency relationship
-            new_gloc = phys.BetheLattice(w-sloc,D); % D is the DOS "radius"
+            new_gloc = phys.bethe(w-sloc,D); % D is the DOS "radius"
             
         % Mixing ( -> stability )
             old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 
@@ -83,9 +79,9 @@ quiet = strcmp(pmode,'quiet');
             counter = counter + 1;
             E = norm(gloc-old_gloc)/norm(gloc);
             if E < err
-               SelfCons = true; 
+               CONVERGED = true; 
             end
-            DoLOOP = (counter < mloop) && (SelfCons == false);
+            LOOP = (counter < mloop) && not(CONVERGED);
             
         % Print Info
             if(~quiet)
@@ -98,7 +94,7 @@ quiet = strcmp(pmode,'quiet');
         fprintf('\n');
     end
     
-    if SelfCons == true
+    if CONVERGED
         fprintf('DMFT has converged after %d steps\n', counter);
     else
         fprintf('DMFT has *not* converged after %d steps\n', counter);
@@ -107,4 +103,8 @@ quiet = strcmp(pmode,'quiet');
     fprintf('> error = %f\n\n',E);
     
 end
+
+
+
+
 

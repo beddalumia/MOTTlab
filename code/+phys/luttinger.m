@@ -1,4 +1,4 @@
-function [I,Lfig] = LuttingerIntegral(w,sloc,gloc)
+function [I,Lfig] = luttinger(w,sloc,gloc)
 %% Computes the Luttinger sum-rule, as defined in PRB 102 081110
 %
 %  Input:

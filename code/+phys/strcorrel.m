@@ -1,4 +1,4 @@
-function S = CorrelationStrenght(w,sloc)
+function S = strcorrel(w,sloc)
 %% Computes the Strenght of Correlations, as defined in PRL 114 185701
 %
 %  Input:

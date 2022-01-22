@@ -1,5 +1,5 @@
-function f = FermiDirac(w,beta)
-%% FERMI DIRAC distribution
+function f = fermi(w,beta)
+%% FERMI-DIRAC distribution
 % w is an array of real values: energies
 % beta is a positive float: inverse temperature
 exponential = exp(beta*w);

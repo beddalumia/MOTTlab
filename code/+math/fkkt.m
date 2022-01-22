@@ -1,7 +1,7 @@
-function K = KramersKronig(F)
-%% KramersKronig transform, exploiting NEXTPOW2 and built-in FFTW wrappers
+function K = fkkt(F)
+%% Fast Kramers-Kronig transform, exploiting NEXTPOW2 and built-in FFTW wrappers
 %
-%       K[F(..)](:) = KramersKronig(F), built through the chain:
+%       K[F(..)](:) = FKKT(F), built through the chain:
 %
 %                   >   S[F] = hilbert(F) [Analytic-Signal]
 %

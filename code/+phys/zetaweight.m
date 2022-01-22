@@ -1,4 +1,4 @@
-function [Z,Zfig] = Zweight(w,sloc)
+function [Z,Zfig] = zetaweight(w,sloc)
 %% ZWEIGHT extracts the Landau quasiparticle weight from \Sigma(\omega)
 %
 %  Input:
