@@ -4,11 +4,13 @@
 % All rights reserved.
 
 clearvars; clc;
-global DEBUG FAST
+global DEBUG FAST CPU
 
 try
     pkg load signal     % GNU Octave option
 end
+
+CPU = getenv('SLURM_JOB_CPUS_PER_NODE');
 
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
@@ -18,10 +20,10 @@ beta = 1e6;             % Inverse Temperature
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
 ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
-TLINE        = 1;       % Takes and fixes the given U value and performs a T-driven line
-UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
+TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
+UTSCAN       = 1;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
-PLOT         = 1;       % Controls plotting of *all static* figures
+PLOT         = 0;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
@@ -29,7 +31,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^13;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
@@ -56,7 +58,7 @@ end
 
 if not( ULINE || TLINE || UTSCAN )
     %% Single (U,T) point
-    fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta)
+    fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta); tic
     [gloc,sloc] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err);
     Z = phys.zetaweight(w,sloc);
     I = phys.luttinger(w,sloc,gloc);
@@ -64,13 +66,15 @@ if not( ULINE || TLINE || UTSCAN )
     if(PLOT && SPECTRAL)
         [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta);
     end
+    ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
+    fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
 end
 
 if ULINE
     %% U-driven MIT line [given T]
-    fprintf('U-driven span @ T = %f\n\n',1/beta)
+    fprintf('U-driven span @ T = %f\n\n',1/beta); tic
     clear('gloc','sloc','Z','I','S')
-    Uvec = Umin:Ustep:Umax; NU = length(Uvec) 
+    Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
@@ -85,12 +89,13 @@ if ULINE
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,dt);
     end
-
+    ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
+    fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
 end
 
 if TLINE
     %% T-driven MIT line [given U]
-    fprintf('T-driven span @ U = %f\n\n',U)
+    fprintf('T-driven span @ U = %f\n\n',U); tic
     clear('gloc','sloc','Z','I','S')
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
     for i = 1:NT 
@@ -107,31 +112,34 @@ if TLINE
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,U,Tmin:Tstep:Tmax,dt);
     end
+    ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
+    fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
 end
 
 if UTSCAN
     %% Full Phase-Diagram [U-driven]
-    fprintf('Full phase diagram\n\n')
+    fprintf('Full phase diagram\n\n'); tic; unit = fopen('~/timings','a');
     clear('gloc','sloc','Z','I','S')
-    i = 0; T = Tmin; %restart_gloc = gloc_0;
-    while T < Tmax
-        i = i + 1;
-        j = 0; 
-        U = Umin; 
-        while U <= Umax  
-            j = j + 1; beta = 1/T;
+    %restart_gloc = gloc_0;
+    Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
+    Uvec = Umin:Ustep:Umax; NU = length(Uvec);
+    for i = 1:NT 
+        T = Tvec(i); beta = 1/T;
+        for j = 1:NU  
+            U = Uvec(j);
             fprintf('< U = %f, T = %f\n',U, T);
             [gloc{i,j},sloc{i,j}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
             %restart_gloc = gloc{i,j};
             Z(i,j) = phys.zetaweight(w,sloc{i,j});
             I(i,j) = phys.luttinger(w,sloc{i,j},gloc{i,j});
             S(i,j) = phys.strcorrel(w,sloc{i,j});
-            U = U + Ustep;
         end
-        T = T + Tstep; 
     end
     if(PLOT)
         phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
     end
+    ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
+    fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
+    fprintf(unit,'%d \t %f \n',CPU,ET(end)); close(unit);
 end
 

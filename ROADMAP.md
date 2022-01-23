@@ -10,17 +10,21 @@
 
 - [x] Complete the original tutorial by inspecting the T-driven MIT and defining the supercritical behaviour (bad metal and pseudogap phases).
 
-#### <p align="right"> `> v0.1` </p>
+#### <p align="right"> [`> v0.1`](https://github.com/bellomia/MOTTlab/releases/tag/v0.1) </p>
 
-## Milestone I: functional phase diagrams, pseudo-order-parameter zoo
+## Milestone I: functional phase diagrams, pseudo-order-parameter zoo, performance
 
-- [x] Compute a MIvsFL marker based on the divergence of Im[Sigma(0)] (much sensible, very inexpensive), so to obtain sharper phase diagrams with respect to the Z-derived ones.  
- At the moment we implement the "strenght of correlations", S = norm[Sigma(0)-Sigma_HF], as defined in `PRL 114 185701 (2015)`, with actual neat results: the marker is almost zero accross the whole FL phase and starts increasing fast in the Mott insulator.
+- [x] Compute a mottness-marker based on the divergence of the scattering rate (Im[Sigma(0)]... very sensible, basically inexpensive), so to obtain sharper phase diagrams with respect to the Z-derived ones. It should also give insight about the supercritical phases: bad metal and pseudogap. [**this yet to check**]   
+  > At the moment we implement the "strenght of correlations", S = norm[Sigma(0)-Sigma(∞)], as defined in `PRL 114 185701 (2015)`, with actual neat results: the marker is almost zero accross the whole FL phase and starts increasing very fast in the Mott insulator.
 
-- [x] Compute the Luttinger Integral, as defined in `J. Phys.: Condens. Matter 28 (2016) 025601` and `PRB 102 081110(R) (2020)`. Since it appears to be quantized it could become the definitive _flag_ for phase diagrams; much better than Z or S for it is an _integer_.  
-UPDATE: Luttinger Theorem currently works for very low temperatures only. It may well be an inherent limitation (in that case it would be a good marker for low temperature lines, but not phase diagrams). Also note that the quality of the first order step at the transition highly depends on the frequency resolution, so to have sharp boundaries you need to have at least `wres=2^14`, which makes the IPT solver far slower. [solved brilliantly with fast convolutions, see the `optimization` section below]
+- [x] Compute the Luttinger integral, as defined in `J. Phys.: Condens. Matter 28 (2016) 025601` and `PRB 102 081110(R) (2020)`. Since it appears to be quantized _at very low temperatures_, it could become the definitive **flag** for _quantum_ phase diagrams; much better than Z or S for it is an **integer**. [→ easier phase-boundary recognition!]  
+    > Luttinger Theorem currently works for very low temperatures only. It might well be an inherent limitation, restricting its domain to the quantum Mott transition. Also note that to have a sharp first order step-up at the transition a very highly frequency resolution is needed, so to make the IPT solver performance-critical! [solved brilliantly with fast convolutions, see the `solver-optimization` section below]
 
-- [ ] Insert a "restarting" protocol for lines and full phase diagram spans. The gloc0=0 condition appers to be too unstable to obtain accurate UC1 values. Furthermore this would most probably speed up a lot the convergence (lowering the required number of iterations), so to enable a relevant slowdown of the single iteration (e.g. bigger frequency resolution).
+- [x] `SOLVER-OPTIMIZATION`: make the SOPT runs faster, by optimizing the needed convolutions. [implemented a pow2-optimized FFTW-based custom algorithm that actually greatly improves the cpu-time for the `wres=2^15` calculation: almost a x10 overall speedup!]
+
+- [ ] `LOOP-OPTIMIZATION`: insert a "restarting" protocol for lines and full phase diagram spans. The gloc0=0 condition appers to be too unstable to obtain accurate UC1 values. Furthermore this would most probably speed up a lot the convergence, by lowering the required number of iterations.
+
+- [ ] `HPC-OPTIMIZATION`: configure an interface to cluster facilities and define the scheduling resources for optimal running [no MPI parallelization, just built-in handling of shared-memory multithreading]  
 
 - [ ] Implement an ergonomic 'full-roundtrip' protocol, so to enable suitable explorations of the coexistence region.
 
@@ -59,10 +63,6 @@ UPDATE: Luttinger Theorem currently works for very low temperatures only. It may
 --->
 
 # TODO
-
-## Optimization
-
-- [x] Make the SOPT runs faster, by optimizing the needed convolutions. [implemented a pow2-optimized FFTW-based custom algorithm that actually greatly improves the cpu-time for the `wres=2^15` calculation!]
 
 - [ ] Start writing markdown [docs](./docs), with the aim to document the implementation details (usage instruction should go directly on the [README](./README.md) instead...)
 
