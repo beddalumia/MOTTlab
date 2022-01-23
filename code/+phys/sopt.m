@@ -52,12 +52,12 @@ if FAST && DEBUG
      P_test = conv(A,A,'same');
      err1 = abs(norm(P_test-P)/norm(P_test));
      if err1 > 10*eps %-> one order above machine precision
-        fprintf('Error on polarization bubble: %.16f \n',err1);
+        fprintf(2,'Error on polarization bubble: %.16f \n',err1);
      end
      D_test = conv(A,P_test,'same');
      err2 = abs(norm(D_test-D)/norm(D_test));
      if err2 > 10*eps %-> idem
-        fprintf('Error on SOPT diagram: %.16f \n',err2);
+        fprintf(2,'Error on SOPT diagram: %.16f \n',err2);
      end
      
 end

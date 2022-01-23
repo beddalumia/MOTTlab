@@ -95,15 +95,15 @@ quiet = strcmp(pmode,'quiet');
     end
     
     if CONVERGED
-        fprintf('DMFT has converged after %d steps\n', counter);
+        fprintf(1,'DMFT has converged after %d steps\n', counter);
     else
-        fprintf('DMFT has *not* converged after %d steps\n', counter);
+        beep
+        fprintf(2,'DMFT *not* converged after %d steps\n', counter);
     end
     
     fprintf('> error = %f\n\n',E);
     
 end
-
 
 
 
