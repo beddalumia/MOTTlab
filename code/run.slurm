@@ -27,7 +27,7 @@
     echo 'Job is running on node(s): '
     echo  $SLURM_JOB_NODELIST
     echo '------------------------------------------------------'
-    START_TIME =`date +%H:%M-%a-%d/%b/%Y`
+    START_TIME=`date +%H:%M-%a-%d/%b/%Y`
     echo ""
     echo 'WORKINFO:'
     echo 'job starting at           '$START_TIME
@@ -44,11 +44,9 @@
     echo '------------------------------------------------------'
 #
 # > JOB COMMAND SCRIPT <
-    echo   'NCPU = ' $SLURM_JOB_CPUS_PER_NODE   >> ~/logs
+    echo   'NCPU = ' $SLURM_JOB_CPUS_PER_NODE   >> $SLURM_JOB_NAME
     matlab -batch "opengl('save','hardware')"
-    printf "\n================\n"               >> ~/logs
-    matlab -batch main                          >> ~/logs
-    printf "\n================\n"               >> ~/logs
+    matlab -batch main                          >> $SLURM_JOB_NAME
 #
 # Wait for processes, if any.
 echo "Waiting for all the processes to finish..."

@@ -118,7 +118,8 @@ end
 
 if UTSCAN
     %% Full Phase-Diagram [U-driven]
-    fprintf('Full phase diagram\n\n'); tic; unit = fopen('~/timings','a');
+    fprintf('Full phase diagram\n\n'); tic; 
+    unit = fopen(sprintf('timing_%scpu',CPU),'w');
     clear('gloc','sloc','Z','I','S')
     %restart_gloc = gloc_0;
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
@@ -140,6 +141,6 @@ if UTSCAN
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
-    fprintf(unit,'%d \t %f \n',CPU,ET(end)); close(unit);
+    fprintf(unit,'%f\n',ET(end)); close(unit);
 end
 
