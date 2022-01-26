@@ -17,7 +17,7 @@ Here we present a few examples of what you can obtain fiddling around the `MOTTl
 `High T: supercritical MIT` |![Mott-Transition-AnimatedDOS-highT](./showcase/uDOS_beta1.gif) | ![Mott-Transition-AnimatedSIGMA-highT](./showcase/uSigma_beta1.gif)  
 
 ## Dependencies
-I've tried hard to avoid exceeding with the infamous MathWorks add-ons. At the moment the only additional dependence is the [Signal Processing Toolbox](https://it.mathworks.com/products/signal.html), which provides an efficient implementation of the discrete Hilbert transforms, at the earth of the numerical evaluation of the Kramers-Kronig relationships. Nevertheless I provide also a FOSS options, through [GNU Octave](https://www.gnu.org/software/octave/) packages.  
+I've tried hard to avoid exceeding with the infamous MathWorks add-ons. At the moment the only additional dependence is the [Signal Processing Toolbox](https://it.mathworks.com/products/signal.html), which provides an efficient implementation of the discrete Hilbert transforms, at the heart of the numerical evaluation of the Kramers-Kronig relationships. Nevertheless I provide also a FOSS options, through [GNU Octave](https://www.gnu.org/software/octave/) packages.  
 
 First of all you need to install the main software. The easiest way that I know is through Homebrew (you won't need sudo rights, they just take care of everything):
 
