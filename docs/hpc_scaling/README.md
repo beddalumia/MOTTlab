@@ -36,7 +36,7 @@ dt    = 0.05;           % Frame duration in seconds (for GIF plotting)
 
 > Please notice that all plotting has been avoided, so to have a measure of the pure computational time. Since real-life runs would totally include plots and file IO, you might need to slightly retune the HPC parameters to account for that, especially if gif-writing[^1] is involved. 
 
-[^1] GIF building is quite expensive on the total elapsed time.
+[^1]: GIF building is quite expensive on the total elapsed time.
 
 The resulting[^2] scaling of the computational time is reported in the bottom figure, where you can notice that:
 
@@ -54,7 +54,7 @@ The resulting[^2] scaling of the computational time is reported in the bottom fi
 
 In conclusion I would suggest to perform single runs just on your personal workstation, so to exploit all the interactive plotting features, without worrying about a severe performance restraint. An HPC workflow would instead be advised whenever you want to do a lot of runs, with slightly different input state (e.g. doing many U-driven roundtrips, each with a different fixed temeperature, with the aim of plotting and saving all the Z vs U curves). That would make for an ideal use case for an _array_ job, making you exploit the HPC facility as an army of workstations at your service! :)
 
-[^2] The test runs have been carried out within the [Ulysses v2](https://www.itcs.sissa.it/services/computing/hpc) HPC facility at [SISSA](https://www.sissa.it).
+[^2]: The test runs have been carried out within the [Ulysses v2](https://www.itcs.sissa.it/services/computing/hpc) HPC facility at [SISSA](https://www.sissa.it).
 
 ## Distributed computing
 
