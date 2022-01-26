@@ -5,7 +5,7 @@
 #SBATCH --mail-type=FAIL            #(e-mail request)        
 #SBATCH --nodes=1                   #(shared-memory enforcement)
 #SBATCH --ntasks=1                  #(MPI serial job)
-#SBATCH --cpus-per-task=8           #(multithreading rank)         
+#SBATCH --cpus-per-task=32          #(multithreading rank)         
 #SBATCH --mem=0                     #(autodetermined memory)
 #[unconfig]#SBATCH --array=01-10    #(multiple jobs with parametric input)
 #SBATCH --partition=queue.name      #(Multiple partitions are possible)

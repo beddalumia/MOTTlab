@@ -24,7 +24,7 @@
 
 - [ ] `LOOP-OPTIMIZATION`: insert a "restarting" protocol for lines and full phase diagram spans. The gloc0=0 condition appers to be too unstable to obtain accurate UC1 values. Furthermore this would most probably speed up a lot the convergence, by lowering the required number of iterations.
 
-- [ ] `HPC-OPTIMIZATION`: configure an interface to cluster facilities and define the scheduling resources for optimal running [no MPI parallelization, just built-in handling of shared-memory multithreading]  
+- [x] `HPC-OPTIMIZATION`: configure an interface to cluster facilities and define the scheduling resources for optimal running [no distributed computing, just built-in handling of shared-memory parallelization]  
 
 - [ ] Implement an ergonomic 'full-roundtrip' protocol, so to enable suitable explorations of the coexistence region.
 

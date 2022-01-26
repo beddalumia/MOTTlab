@@ -32,7 +32,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^13;           % Energy resolution in real-frequency axis
+wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.09;           % Hubbard U incremental step for phase diagrams
@@ -141,6 +141,6 @@ if UTSCAN
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
-    fprintf(unit,'%f\n',ET(end)); close(unit);
+    fprintf(unit,'%s\t%f\n',CPU,ET(end)); fclose(unit);
 end
 
