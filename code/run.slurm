@@ -45,12 +45,16 @@
 #
 # > JOB COMMAND SCRIPT <
     echo   'NCPU = ' $SLURM_JOB_CPUS_PER_NODE   >> $SLURM_JOB_NAME
-    matlab -batch "opengl('save','hardware')"
-    matlab -batch main                          >> $SLURM_JOB_NAME
+#   matlab -batch main                          >> $SLURM_JOB_NAME 2>&1
+#   matlab -batch main    2>&1    |   tee  -a      $SLURM_JOB_NAME
+    matlab -batch main        -logfile             $SLURM_JOB_NAME
 #
 # Wait for processes, if any.
 echo "Waiting for all the processes to finish..."
 wait
+
+
+
 
 
 
