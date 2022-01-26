@@ -1,6 +1,6 @@
 ## Multicore optimization
 
-MATLAB's [built-in multithreading](https://it.mathworks.com/discovery/matlab-multicore.html) allows for potentially faster execution of most performance-critical tasks in the code: mainly the `fft()` calls within the IPT-solver (`phys.sopt()`) and the Kramers-Kronig transforms (`math.fkkt()`). 
+MATLAB's [built-in multithreading](https://it.mathworks.com/discovery/matlab-multicore.html) allows for potentially faster execution of most performance-critical tasks in the code: mainly the [`fft()`](https://it.mathworks.com/help/matlab/ref/fft.html) calls within the IPT-solver ([`phys.sopt()`](https://github.com/bellomia/MOTTlab/blob/673cf68ee93f337c9dd44882dec6bd803e7bc46e/code/%2Bphys/sopt.m#L31-L39)) and the Kramers-Kronig transforms ([`math.fkkt()`](https://github.com/bellomia/MOTTlab/blob/673cf68ee93f337c9dd44882dec6bd803e7bc46e/code/%2Bmath/fkkt.m#L27)). 
 
 The multicore performance has been carefully measured through the [provided slurm script](../../code/run.slurm), for a full phase-diagram scan defined by:
 
