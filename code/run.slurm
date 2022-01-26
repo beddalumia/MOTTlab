@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 #
-#SBATCH --job-name=mottlab.run      #(custom jobname)
+#SBATCH --job-name=TMIT             #(custom jobname)
 #SBATCH --mail-user=user@hpc.it     #(e-mail address)
 #SBATCH --mail-type=FAIL            #(e-mail request)        
 #SBATCH --nodes=1                   #(shared-memory enforcement)
 #SBATCH --ntasks=1                  #(MPI serial job)
 #SBATCH --cpus-per-task=32          #(multithreading rank)         
 #SBATCH --mem=0                     #(autodetermined memory)
-#[unconfig]#SBATCH --array=01-10    #(multiple jobs with parametric input)
+#SBATCH --array=01-60%1             #(multiple jobs with parametric input)
 #SBATCH --partition=queue.name      #(Multiple partitions are possible)
 #SBATCH --time=03:05:07             #(Time limit < hrs:min:sec)
-#SBATCH --output=sLOG_%x_out%j      #(STDOUT-log)
-#SBATCH --error=sLOG_%x_err%j       #(STDERR-log)
+#SBATCH --output=sLOG_%x_out%A_%a   #(STDOUT-log)
+#SBATCH --error=sLOG_%x_err%A_%a    #(STDERR-log)
 #
 # > MODULES AND LAUNCH DIRECTORY <
     module load matlab
@@ -44,10 +44,8 @@
     echo '------------------------------------------------------'
 #
 # > JOB COMMAND SCRIPT <
-    echo   'NCPU = ' $SLURM_JOB_CPUS_PER_NODE   >> $SLURM_JOB_NAME
-#   matlab -batch main                          >> $SLURM_JOB_NAME 2>&1
-#   matlab -batch main    2>&1    |   tee  -a      $SLURM_JOB_NAME
-    matlab -batch main        -logfile             $SLURM_JOB_NAME
+    matlab -batch main -logfile "log_${SLURM_JOB_NAME}_U${SLURM_ARRAY_TASK_ID}e-1"
+    cat "log_${SLURM_JOB_NAME}_U${SLURM_ARRAY_TASK_ID}e-1" >> "LOG_${SLURM_JOB_NAME}"
 #
 # Wait for processes, if any.
 echo "Waiting for all the processes to finish..."

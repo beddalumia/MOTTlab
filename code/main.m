@@ -10,21 +10,21 @@ try
     pkg load signal     % GNU Octave option
 end
 
-CPU = getenv('SLURM_JOB_CPUS_PER_NODE');
-
 %% INPUT: Physical Parameters 
 D    = 1;               % Bandwidth
-U    = 3;               % On-site Repulsion
+U    = 0.1;             % On-site Repulsion
 beta = 1e6;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
 ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
-TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
-UTSCAN       = 1;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 0;       % Controls plotting of spectral functions
+TLINE        = 1;       % Takes and fixes the given U value and performs a T-driven line
+UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
+SPECTRAL     = 1;       % Controls plotting of spectral functions
 PLOT         = 0;       % Controls plotting of *all static* figures
-GIF          = 0;       % Controls plotting of *animated* figures
+GIF          = 1;       % Controls plotting of *animated* figures
+UARRAY       = 1;       % Activates SLURM scaling of interaction values
+TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
 DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
@@ -42,6 +42,18 @@ Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
 dt    = 0.05;           % Frame duration in seconds (for GIF plotting)
 
+%% SLURM-SCALING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+aID = str2double(getenv('SLURM_ARRAY_TASK_ID'));
+
+if UARRAY
+   U = U*aID;
+end
+
+if TARRAY
+   beta = beta*aID;
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Init
@@ -55,6 +67,8 @@ if MottBIAS
 else
    gloc_0 = phys.bethe(w + 10^(-3)*1i,D); % D is the DOS "radius"
 end
+
+%% Workflows
 
 if not( ULINE || TLINE || UTSCAN )
     %% Single (U,T) point
@@ -119,7 +133,6 @@ end
 if UTSCAN
     %% Full Phase-Diagram [U-driven]
     fprintf('Full phase diagram\n\n'); tic; 
-    unit = fopen(sprintf('timing_%scpu',CPU),'w');
     clear('gloc','sloc','Z','I','S')
     %restart_gloc = gloc_0;
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
@@ -141,6 +154,7 @@ if UTSCAN
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
-    fprintf(unit,'%s\t%f\n',CPU,ET(end)); fclose(unit);
 end
+
+
 
