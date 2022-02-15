@@ -14,14 +14,15 @@ function [I,Lfig] = luttinger(w,sloc,gloc)
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
                                                                global DEBUG
-                                                               w = w(w<=0);
-                                                               sloc = sloc(w<=0);
-                                                               gloc = gloc(w<=0);
+% w = w(w<=0);          % Faster (half points to sum)
+% sloc = sloc(w<=0);    % but apparently less accurate
+% gloc = gloc(w<=0);    % --> better to exploit ph-sym
+
 ds  = diff(sloc); % dSigma -> already eliminates dw!
 g_  = gloc(1:end-1);
 integrand  = imag(g_.*ds);
-I = 2/pi*sum(integrand);
-I = abs(I); % J. Phys.: Condens. Matter 28 (2016) 025601
+I = 1/pi*sum(integrand);
+%I = abs(I); % J. Phys.: Condens. Matter 28 (2016) 025601
                                                                    if DEBUG
 Lfig = figure("Name",'Luttinger integrand','Visible','off');
 plot(w(1:end-1),integrand);
