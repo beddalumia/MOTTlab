@@ -4,11 +4,15 @@ function f = fermi(w,beta)
 % beta is a positive float: inverse temperature
 
 if(beta==inf)
-   f = heaviside(-w); %return
+   fh = heaviside(-w);
 end
 
 exponential = exp(beta*w);
 f = 1./(exponential+1);
+
+if fh ~= f
+   error("Wrong Heaviside!");
+end
 
 end
 
