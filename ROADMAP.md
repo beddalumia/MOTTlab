@@ -32,9 +32,12 @@
 #### <p align="right"> `> v1.0` </p>
 --->
 
-## Milestone II: topological madness
+## Milestone II: more lattices
 
-- [ ] Try to reproduce the main result of `PRB 102 081110(R)`, namely the Lanczos tridiagonalization of the self-energy leading to the mapping of the quantum MIT to a generalized SSH SP-TQPT. The original result is achieved within DMFT/NRG and an insane bath dimension, so if we succeed this could be even a [ReScience](http://rescience.github.io) submission (given everything is Octave compatible).
+- [ ] Add a bunch of different particle-hole symmetric lattices, such as finite-coordination Bethe, honeycomb, 2d-square, 1d-chain, 3d-cubic, 3d-bcc... the main inspiration comes from the mighty [GFtools](https://github.com/DerWeh/gftools) by [DerWeh](https://github.com/DerWeh).
+
+- [ ] Rewrite the code for the particle-hole broken case so to enable even more lattices, like kagome, fcc, triangular.
+
 
 <!---
 #### <p align="right"> `> v2.0`</p>
@@ -52,11 +55,9 @@
 #### <p align="right"> `> v3.0`</p>
 --->
 
-## Milestone IV: explorative fun... more lattices!
+## Milestone IV: topological madness
 
-- [ ] Add a bunch of different particle-hole symmetric lattices, such as finite-coordination Bethe, honeycomb, 2d-square, 1d-chain, 3d-cubic, 3d-bcc... the main inspiration comes from the mighty [GFtools](https://github.com/DerWeh/gftools) by [DerWeh](https://github.com/DerWeh).
-
-- [ ] Rewrite the code for the particle-hole broken case so to enable even more lattices, like kagome, fcc, triangular.
+- [ ] Try to reproduce the main result of `PRB 102 081110(R)`, namely the Lanczos tridiagonalization of the self-energy leading to the mapping of the quantum MIT to a generalized SSH SP-TQPT. The original result is achieved within DMFT/NRG and an insane bath dimension, so if we succeed this could be even a [ReScience](http://rescience.github.io) submission (given everything is Octave compatible).
 
 <!---
 #### <p align="right"> `> v4.0`</p>
