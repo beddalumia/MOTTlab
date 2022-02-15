@@ -4,7 +4,7 @@
 % All rights reserved.
 
 clearvars; clc;
-global DEBUG FAST CPU
+global DEBUG FAST
 
 try
     pkg load signal     % GNU Octave option
@@ -25,7 +25,7 @@ PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
-DEBUG        = 0;       % Activates debug prints / plots / operations
+DEBUG        = 1;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters

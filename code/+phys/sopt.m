@@ -40,25 +40,25 @@ else
      
 end
 
-  %% Enforce ph & half-filling to retrieve A^- contribution (holes)
-     D = D + flip(D); % flip{v(1:end)}=v(end:1)
-     
-  %% Imaginary part of the Self-Energy according to SOPT
-     im_sloc = -pi * U^2 * D;
-    
 if FAST && DEBUG
-    
   %% Cross-Check
      P_test = conv(A,A,'same');
-     err1 = abs(norm(P_test-P)/norm(P_test));
+     err1 = norm(P_test-P)/norm(P_test);
      if err1 > 10*eps %-> one order above machine precision
         fprintf(2,'Error on polarization bubble: %.16f \n',err1);
      end
      D_test = conv(A,P_test,'same');
-     err2 = abs(norm(D_test-D)/norm(D_test));
+     err2 = norm(D_test-D)/norm(D_test);
      if err2 > 10*eps %-> idem
         fprintf(2,'Error on SOPT diagram: %.16f \n',err2);
      end
+end
+
+  %% Enforce ph & half-filling to retrieve A^- contribution (holes)
+     D = D + flip(D); % flip{v(1:end)}=v(end:1)
+
+  %% Imaginary part of the Self-Energy according to SOPT
+     im_sloc = -pi * U^2 * D;
      
 end
 
