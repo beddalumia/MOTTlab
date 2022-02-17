@@ -12,10 +12,14 @@ f = 1./(exponential+1);
                                                                    if DEBUG
 if(beta==inf)
    fh = heaviside(-w);
-   if fh ~= f
+   if any(fh ~= f)
       error("Fermi function at T=0 does not give a heaviside step!");
    end
 end
                                                                    end
 end
 
+
+function y = heaviside(x)
+         y = (x > 0) + 0.5*(x == 0);
+end
