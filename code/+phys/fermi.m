@@ -6,19 +6,20 @@ function f = fermi(w,beta)
 %
 % NB. you can totally pass 'inf' to beta and get correct T=0 results :)
 
-                                                               global DEBUG
-exponential = exp(beta*w);
-f = 1./(exponential+1);
-                                                                   if DEBUG
-if(beta==inf)
-   fh = heaviside(-w);
-   if any(fh ~= f)
-      error("Fermi function at T=0 does not give a heaviside step!");
-   end
-end
-                                                                   end
-end
+    switch beta   
+        
+        case inf    
+            
+            f = heaviside(-w);  
+            
+        otherwise 
+            
+            exponential = exp(beta*w);
+            f = 1./(exponential+1);   
+            
+    end
 
+end
 
 function y = heaviside(x)
          y = (x > 0) + 0.5*(x == 0);
