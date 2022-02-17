@@ -11,9 +11,10 @@ try
 end
 
 %% INPUT: Physical Parameters 
-D    = 1;               % Bandwidth
 U    = 0.1;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
+D    = 1.0;             % Noninteracting bandwidth
+latt = 'bethe';         % Noninteracting dispersion
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
@@ -25,7 +26,7 @@ PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
-DEBUG        = 1;       % Activates debug prints / plots / operations
+DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
@@ -65,7 +66,7 @@ w = linspace(-wcut,wcut,wres);
 if MottBIAS
    gloc_0 = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   gloc_0 = phys.bethe(w + 10^(-3)*1i,D); % D is the DOS "radius"
+   gloc_0 = phys.lattice(w + 10^(-3)*1i,D,latt);
 end
 
 %% Workflows
@@ -73,7 +74,7 @@ end
 if not( ULINE || TLINE || UTSCAN )
     %% Single (U,T) point
     fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta); tic
-    [gloc,sloc] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err);
+    [gloc,sloc] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err);
     Z = phys.zetaweight(w,sloc);
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
@@ -92,7 +93,7 @@ if ULINE
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
-        [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
+        [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
         Z(i) = phys.zetaweight(w,sloc{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
@@ -115,7 +116,7 @@ if TLINE
     for i = 1:NT 
         T = Tvec(i); beta = 1/T;
         fprintf('< T = %f\n',T);
-        [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
+        [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
         Z(i) = phys.zetaweight(w,sloc{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
@@ -142,7 +143,7 @@ if UTSCAN
         for j = 1:NU  
             U = Uvec(j);
             fprintf('< U = %f, T = %f\n',U, T);
-            [gloc{i,j},sloc{i,j}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
+            [gloc{i,j},sloc{i,j}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
             %restart_gloc = gloc{i,j};
             Z(i,j) = phys.zetaweight(w,sloc{i,j});
             I(i,j) = phys.luttinger(w,sloc{i,j},gloc{i,j});

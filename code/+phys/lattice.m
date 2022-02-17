@@ -1,5 +1,5 @@
-function gloc = bethe(zeta,D)
-%% SELF-CONSISTENCY relation for the Bethe lattice
+function gloc = lattice(zeta,D,lattice)
+%% SELF-CONSISTENCY relation for the DMFT loop
 %  
 %  Most generally the DMFT self-consistency relation expresses the local
 %  GF as a the Fourier transform of the lattice GF evaluated at r=0, namely
@@ -33,9 +33,19 @@ function gloc = bethe(zeta,D)
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
 
-    s    = sqrt(zeta.^2 - D^2);
-    p    = sign(imag(s)) .* s;
-    gloc = 2 * (zeta - p) / D^2;
+    switch lattice
+        
+        case 'bethe'
+
+            s    = sqrt(zeta.^2 - D^2);
+            p    = sign(imag(s)) .* s;
+            gloc = 2 * (zeta - p) / D^2;
+    
+        otherwise
+            
+            error('Invalid lattice');
+        
+    end
     
 end
 

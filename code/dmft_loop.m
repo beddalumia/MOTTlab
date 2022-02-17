@@ -1,5 +1,5 @@
-function [gloc,sloc] = dmft_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
-%% DMFT_LOOP Single band Bethe lattice at half filling. Using IPT.
+function [gloc,sloc] = dmft_loop(gloc,w,U,beta,D,dos,mloop,mix,err,pmode)
+%% DMFT_LOOP on a single-band Hubbard model at half filling. Using IPT.
 %
 %%    Parameters
 %     ----------
@@ -7,12 +7,14 @@ function [gloc,sloc] = dmft_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %             Local Green's function to use as seed/restart
 %     w     : real 1D ndarray
 %             Real frequency points
-%     D     : float
-%             Radius of the semicircular Density of States, Bandwidth
 %     U     : float
 %             Onsite interaction, Hubbard U
 %     beta  : float
 %             Inverse temperature
+%     D     : float
+%             Bandwidth of the noninteracting density of states
+%     dos   : string [default: bethe]
+%             Lattice on which the Hubbard model is defined
 %     mloop : int
 %             Max amount of DMFT iterations to perform
 %     mix   : float \in [0,1]
@@ -69,8 +71,8 @@ quiet = strcmp(pmode,'quiet');
         % Kramers-Kronig transform, to get Re(Sigma(w))
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
-        % Self-Consistency relationship
-            new_gloc = phys.bethe(w-sloc,D); % D is the DOS "radius"
+        % Self-Consistency relation
+            new_gloc = phys.lattice(w-sloc,D,dos); % D is the dos bandwidth
             
         % Mixing ( -> stability )
             old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 
