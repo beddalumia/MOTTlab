@@ -12,7 +12,7 @@ function [gloc,sloc] = dmft_loop(gloc,w,U,beta,D,dos,mloop,mix,err,pmode)
 %     beta  : float
 %             Inverse temperature
 %     D     : float
-%             Bandwidth of the noninteracting density of states
+%             Half-bandwidth of the noninteracting system
 %     dos   : string [default: bethe]
 %             Lattice on which the Hubbard model is defined
 %     mloop : int
@@ -72,7 +72,7 @@ quiet = strcmp(pmode,'quiet');
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Self-Consistency relation
-            new_gloc = phys.lattice(w-sloc,D,dos); % D is the dos bandwidth
+            new_gloc = phys.lattice(w-sloc,D,dos);
             
         % Mixing ( -> stability )
             old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 

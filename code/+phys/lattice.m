@@ -30,7 +30,7 @@ function gloc = lattice(zeta,D,lattice)
 %
 %% BSD 3-Clause License
 %
-%  Copyright (c) 2020, Gabriele Bellomia
+%  Copyright (c) 2020-2022, Gabriele Bellomia
 %  All rights reserved.
 
     switch lattice
@@ -40,7 +40,13 @@ function gloc = lattice(zeta,D,lattice)
             s    = sqrt(zeta.^2 - D^2);
             p    = sign(imag(s)) .* s;
             gloc = 2 * (zeta - p) / D^2;
-    
+            
+        case 'square'
+            
+            invz = 1./zeta;
+            ellk = ellipticK(D^2*invz.^2);
+            gloc = 2/pi.*invz.*ellk;
+            
         otherwise
             
             error('Invalid lattice');
@@ -49,3 +55,20 @@ function gloc = lattice(zeta,D,lattice)
     
 end
 
+%% ellipticK(m) evaluates to:
+%
+%       π
+%       ─
+%       2
+%       ⌠
+%       ⎮         1
+%       ⎮ ────────────────── dϕ
+%       ⎮    _______________
+%       ⎮   ╱          2
+%       ⎮ ╲╱  1 - m⋅sin (ϕ)
+%       ⌡
+%       0
+%
+% NB: it requires Symbolic Math Toolbox! For real m we could use the faster 
+%     and built-in ellipke(m), but here we unfortunately need { m ∈ ℂ }
+%
