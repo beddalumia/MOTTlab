@@ -9,7 +9,7 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
 %  Tvec : array of Temperature span values
 %  dt   : delay-time for the GIF frames
 %  ------------------------------------------------------------------------
-                                                             global DoDEBUG
+                                                               global DEBUG
     fprintf('Start GIF building...\n\n');
     if(length(Uvec)>length(Tvec))
         %% U-driven MIT
@@ -28,14 +28,14 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             % Close the figures
             close(DOS);
             close(SE);
-if DoDEBUG
+if DEBUG
             [~,LI] = phys.LuttingerIntegral(w,gloc{i},sloc{i});
-            title(sprintf('IPT  |  DOS @ U/t = %.2f, beta = %d',2*U,beta));
+            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U,beta));
             LName = append('Luttinger_',TitleString,'.gif');
             plot.push_frame(LName,i,length(Uvec),dt,LI);
             close(LI);
             [~,ZF] = phys.Zweight(w,sloc{i});
-            title(sprintf('IPT  |  DOS @ U/t = %.2f, beta = %d',2*U,beta));
+            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U,beta));
             ZName = append('Zfit_',TitleString,'.gif');
             plot.push_frame(ZName,i,length(Uvec),dt,ZF);
             close(ZF);
