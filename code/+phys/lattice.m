@@ -47,6 +47,12 @@ function gloc = lattice(zeta,D,lattice)
             ellk = ellipticK(D^2*invz.^2);
             gloc = 2/pi.*invz.*ellk;
             
+        case 'chain'
+            
+            invz = 1./zeta;
+            fact = D.*invz;
+            gloc = fact./sqrt(1-fact.^2);
+            
         otherwise
             
             error('Invalid lattice');
