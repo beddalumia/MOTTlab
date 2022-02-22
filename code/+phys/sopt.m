@@ -22,6 +22,10 @@ function im_sloc = sopt(A,F,U)
 %  All rights reserved.
 
 global DEBUG FAST
+
+if(U < eps)
+   U = eps; % more stable
+end
                                                           
   %% Particle distribution: A^+ = A*f [Hole distribution: A^- = A(1-f)]
      A = A.*F; 
