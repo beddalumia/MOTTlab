@@ -58,6 +58,18 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+switch latt
+
+    case {'square','cubic','bcc'}
+
+        fprintf(2,'SLOW-RUN: %s lattice requires symbolic computations \n',latt);
+
+    otherwise
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Init
 
 % Frequency Values
