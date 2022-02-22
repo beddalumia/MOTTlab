@@ -1,4 +1,4 @@
-function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
+function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,D,fmode)
 %% SPECTRAL_FRAME
 %  Builds nice plots for the spectral functions
 %  w     : array of frequency values [float]
@@ -22,7 +22,7 @@ function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
     EmptyDOS = -imag(gloc(w>0))/pi; 
     area(FilledStates, FilledDOS, 'FaceColor', [0.7 0.7 0.7]); hold on
     area(EmptyStates, EmptyDOS, 'FaceColor', [1 1 1]);
-    title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d', U, beta));
+    title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d', U/D, beta));
     xlabel('\omega')
     ylabel('A(\omega)')
     ylim([0,1])
@@ -33,7 +33,7 @@ function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
     end
     plot(w,real(sloc)./U,'LineWidth',1); hold on
     plot(w,imag(sloc)./U,'LineWidth',1);
-    title(sprintf('IPT  |  Self-Energy @ U/D = %.2f, beta = %d', U, beta)); 
+    title(sprintf('IPT  |  Self-Energy @ U/D = %.2f, beta = %d', U/D, beta)); 
     xlabel('\omega')
     ylabel('Units of U')
     ylim([-1,1])

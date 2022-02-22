@@ -1,4 +1,4 @@
-function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
+function spectral_gif(w,gloc,sloc,Uvec,Tvec,D,dt)
 %% SPECTRAL_GIF 
 %  Builds a GIF for the line-evolution of the spectral functions
 %  the function is overloaded to the two types of lines (U- and T-driven)
@@ -17,7 +17,7 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             U = Uvec(i);
             beta = 1/Tvec;
             % Build the plots
-            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
+            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,D,'invisible');
             % Set filenames
             TitleString = sprintf('beta%d', beta);
             DosName = append('uDOS_',TitleString,'.gif');
@@ -30,12 +30,12 @@ function spectral_gif(w,gloc,sloc,Uvec,Tvec,dt)
             close(SE);
 if DEBUG
             [~,LI] = phys.LuttingerIntegral(w,gloc{i},sloc{i});
-            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U,beta));
+            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U/D,beta));
             LName = append('Luttinger_',TitleString,'.gif');
             plot.push_frame(LName,i,length(Uvec),dt,LI);
             close(LI);
             [~,ZF] = phys.Zweight(w,sloc{i});
-            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U,beta));
+            title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d',U/D,beta));
             ZName = append('Zfit_',TitleString,'.gif');
             plot.push_frame(ZName,i,length(Uvec),dt,ZF);
             close(ZF);
@@ -47,7 +47,7 @@ end
             U = Uvec;
             beta = 1/Tvec(i);
             % Build the plots
-            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,'invisible');
+            [DOS,SE] = plot.spectral_frame(w,gloc{i},sloc{i},U,beta,D,'invisible');
             % Set filenames
             TitleString = sprintf('U%f', U);
             DosName = append('betaDOS_',TitleString,'.gif');

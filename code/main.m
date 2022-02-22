@@ -11,20 +11,20 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 0.0;             % On-site Repulsion
+U    = 1.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 4.0;             % Noninteracting half-bandwidth
-latt = 'chain';         % Noninteracting band-dispersion 
+latt = 'chain';        % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
-TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
+TLINE        = 1;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 1;       % Controls plotting of spectral functions
 PLOT         = 1;       % Controls plotting of *all static* figures
-GIF          = 1;       % Controls plotting of *animated* figures
+GIF          = 0;       % Controls plotting of *animated* figures
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
 DEBUG        = 0;       % Activates debug prints / plots / operations
@@ -34,7 +34,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^15;           % Energy resolution in real-frequency axis
+wres  = 2^13;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.09;           % Hubbard U incremental step for phase diagrams
@@ -80,7 +80,7 @@ if not( ULINE || TLINE || UTSCAN )
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
     if(PLOT && SPECTRAL)
-        [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta);
+        [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta,D);
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
@@ -100,10 +100,10 @@ if ULINE
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(Z,I,beta,Umin,Ustep,Umax);
+        u_span = plot.Uline(Z,I,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
-        plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,dt);
+        plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
@@ -123,10 +123,10 @@ if TLINE
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        t_span = plot.Tline(Z,U,Tmin,Tstep,Tmax);
+        t_span = plot.Tline(Z,U,Tmin,Tstep,Tmax,D);
     end
     if(GIF && SPECTRAL)
-        plot.spectral_gif(w,gloc,sloc,U,Tmin:Tstep:Tmax,dt);
+        plot.spectral_gif(w,gloc,sloc,U,Tmin:Tstep:Tmax,D,dt);
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
@@ -152,7 +152,7 @@ if UTSCAN
         end
     end
     if(PLOT)
-        phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
+        phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax,D);
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));

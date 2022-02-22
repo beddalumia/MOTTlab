@@ -1,5 +1,5 @@
-function map = phase_diagram(marker,Umin,Ustep,Umax,Tmin,Tstep,Tmax)
-    X = Umin:Ustep:Umax;
+function map = phase_diagram(marker,Umin,Ustep,Umax,Tmin,Tstep,Tmax,D)
+    X = Umin:Ustep:Umax; X=X/D;
     Y = Tmin:Tstep:Tmax;
     Z = marker;
     % Surface plot
