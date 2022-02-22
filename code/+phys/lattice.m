@@ -44,8 +44,24 @@ function gloc = lattice(zeta,D,lattice)
         case 'square'
             
             invz = 1./zeta;
-            ellk = ellipticK(D^2*invz.^2);
+            ellk = elliptic(D^2*invz.^2,lattice);
             gloc = 2/pi.*invz.*ellk;
+            
+        case {'cubic','sc'}
+            
+            invd = 3/D;
+            zeta = invd.*zeta;
+            zsqr = zeta.^(-2);
+            xi   = sqrt(1-sqrt(1-zsqr)) ./ sqrt(1+sqrt(1-9.*zsqr));
+            invx = 1 ./ ((1 - xi).^3 .* (1 + 3*xi));
+            ellk = elliptic(16 .* xi.^3 .* invx, lattice);
+            gloc = invd .* (1-9.*xi.^4) .* (2/pi.*ellk).^2 .* invx ./ zeta;
+            
+        case 'bcc'
+            
+            zren = zeta/D;
+            ellk = elliptic(0.5 .* (1-sqrt(1-zren.^(-2))), lattice);
+            gloc = 4 ./ (pi^2 .* zeta) .* ellk.^2; 
             
         case 'chain'
             
@@ -61,7 +77,8 @@ function gloc = lattice(zeta,D,lattice)
     
 end
 
-%% ellipticK(m) evaluates to:
+function k = elliptic(m,str)
+%% elliptic(m,str) wraps ellipticK(m) which in turn evaluates:
 %
 %       π
 %       ─
@@ -78,3 +95,6 @@ end
 % NB: it requires Symbolic Math Toolbox! For real m we could use the faster 
 %     and built-in ellipke(m), but here we unfortunately need { m ∈ ℂ }
 %
+fprintf(2,'SLOW-RUN: %s lattice requires symbolic computations \n',str);
+k = ellipticK(m);
+end
