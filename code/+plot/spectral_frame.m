@@ -17,15 +17,15 @@ function [DOS,SELF_ENERGY] = spectral_frame(w,gloc,sloc,U,beta,fmode)
         set(DOS,'Visible', 'on');
     end
     FilledStates = w(w<=0);
-    FilledDOS = -imag(gloc(w<=0));
+    FilledDOS = -imag(gloc(w<=0))/pi;
     EmptyStates = w(w>0);
-    EmptyDOS = -imag(gloc(w>0)); 
+    EmptyDOS = -imag(gloc(w>0))/pi; 
     area(FilledStates, FilledDOS, 'FaceColor', [0.7 0.7 0.7]); hold on
     area(EmptyStates, EmptyDOS, 'FaceColor', [1 1 1]);
     title(sprintf('IPT  |  DOS @ U/D = %.2f, beta = %d', U, beta));
     xlabel('\omega')
-    ylabel('\pi A(\omega)')
-    ylim([0,2])
+    ylabel('A(\omega)')
+    ylim([0,1])
     legend('Filled States','Empty States')
     SELF_ENERGY = figure("Name",'Self-Energy','Visible','off');
     if(show)
