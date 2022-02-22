@@ -1,4 +1,4 @@
-function gloc = lattice(zeta,D,lattice)
+function gloc = gloc(zeta,D,lattice)
 %% SELF-CONSISTENCY relation for the DMFT loop
 %  
 %  Most generally the DMFT self-consistency relation expresses the local

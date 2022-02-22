@@ -72,7 +72,7 @@ quiet = strcmp(pmode,'quiet');
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Self-Consistency relation
-            new_gloc = phys.lattice(w-sloc,D,dos);
+            new_gloc = phys.gloc(w-sloc,D,dos);
             
         % Mixing ( -> stability )
             old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 

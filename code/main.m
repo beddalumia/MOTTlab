@@ -66,7 +66,7 @@ w = linspace(-wcut,wcut,wres);
 if MottBIAS
    gloc_0 = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   gloc_0 = phys.lattice(w + 10^(-3)*1i,D,latt);
+   gloc_0 = phys.gloc(w + 10^(-3)*1i,D,latt);
 end
 
 %% Workflows
