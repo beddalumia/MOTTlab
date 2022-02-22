@@ -67,7 +67,7 @@ function gloc = gloc(zeta,D,lattice)
             
             invz = 1./zeta;
             fact = D.*invz;
-            gloc = fact./sqrt(1-fact.^2);
+            gloc = invz./sqrt(1-fact.^2);
             
         otherwise
             
@@ -84,8 +84,8 @@ function k = elliptic(m,str)
 %       ─
 %       2
 %       ⌠
-%       ⎮         1
-%       ⎮ ────────────────── dϕ
+%       ⎮         dϕ
+%       ⎮ ────────────────── 
 %       ⎮    _______________
 %       ⎮   ╱          2
 %       ⎮ ╲╱  1 - m⋅sin (ϕ)

@@ -13,8 +13,9 @@ end
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
-D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'bcc';           % Noninteracting band-dispersion
+D    = 4.0;             % Noninteracting half-bandwidth
+latt = 'chain';         % Noninteracting band-dispersion 
+                        % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
