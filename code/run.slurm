@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 #
-#SBATCH --job-name=TMIT             #(custom jobname)
-#SBATCH --mail-user=user@hpc.it     #(e-mail address)
-#SBATCH --mail-type=FAIL            #(e-mail request)        
-#SBATCH --nodes=1                   #(shared-memory enforcement)
-#SBATCH --ntasks=1                  #(MPI serial job)
-#SBATCH --cpus-per-task=32          #(multithreading rank)         
-#SBATCH --mem=0                     #(autodetermined memory)
-#SBATCH --array=01-60%1             #(multiple jobs with parametric input)
-#SBATCH --partition=queue.name      #(Multiple partitions are possible)
-#SBATCH --time=03:05:07             #(Time limit < hrs:min:sec)
-#SBATCH --output=sLOG_%x_out%A_%a   #(STDOUT-log)
-#SBATCH --error=sLOG_%x_err%A_%a    #(STDERR-log)
+#SBATCH --job-name=ipt.square               #(custom jobname)
+#SBATCH --mail-user=gbellomi@sissa.it       #(e-mail address)
+#SBATCH --mail-type=ARRAY_TASKS             #(e-mail request)        
+#SBATCH --nodes=1                           #(shared-memory enforcement)
+#SBATCH --ntasks=1                          #(MPI serial job)
+#SBATCH --cpus-per-task=32                  #(multithreading rank)         
+#SBATCH --mem=0                             #(autodetermined memory)
+#SBATCH --array=01-66%33                    #(multiple jobs with parametric input)
+#SBATCH --partition=regular1,regular2       #(Multiple partitions are possible)
+#SBATCH --time=12:00:00                     #(Time limit < hrs:min:sec)
+#SBATCH --output=sLOG_%x_out%A_%a           #(STDOUT-log)
+#SBATCH --error=sLOG_%x_err%A_%a            #(STDERR-log)
 #
 # > MODULES AND LAUNCH DIRECTORY <
     module load matlab

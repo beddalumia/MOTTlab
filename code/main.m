@@ -11,21 +11,21 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 1.0;             % On-site Repulsion
+U    = 0.09;            % On-site Repulsion
 beta = inf;             % Inverse Temperature
-D    = 4.0;             % Noninteracting half-bandwidth
-latt = 'chain';        % Noninteracting band-dispersion 
+D    = 1.0;             % Noninteracting half-bandwidth
+latt = 'square';        % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
 ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
-TLINE        = 1;       % Takes and fixes the given U value and performs a T-driven line
+TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 1;       % Controls plotting of spectral functions
-PLOT         = 1;       % Controls plotting of *all static* figures
+SPECTRAL     = 0;       % Controls plotting of spectral functions
+PLOT         = 0;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
-UARRAY       = 0;       % Activates SLURM scaling of interaction values
+UARRAY       = 1;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
 DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
@@ -34,7 +34,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^13;           % Energy resolution in real-frequency axis
+wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.09;           % Hubbard U incremental step for phase diagrams
@@ -96,6 +96,10 @@ if not( ULINE || TLINE || UTSCAN )
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
+    writematrix(U,sprintf('U%f.dat',U));
+    writematrix(I,sprintf('U%f_IL.dat',U)); 
+    writematrix(Z,sprintf('U%f_ZF.dat',U)); 
+    writematrix(S,sprintf('U%f_SR.dat',U));
 end
 
 if ULINE
