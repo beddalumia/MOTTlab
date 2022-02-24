@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-#SBATCH --job-name=ipt.cubic               #(custom jobname)
+#SBATCH --job-name=ipt.bcc                  #(custom jobname)
 #SBATCH --mail-user=gbellomi@sissa.it       #(e-mail address)
-#SBATCH --mail-type=ALL,ARRAY_TASKS         #(e-mail request)        
+#SBATCH --mail-type=END,FAIL                #(e-mail request)        
 #SBATCH --nodes=1                           #(shared-memory enforcement)
 #SBATCH --ntasks=1                          #(MPI serial job)
 #SBATCH --cpus-per-task=32                  #(multithreading rank)         

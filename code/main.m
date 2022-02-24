@@ -14,7 +14,7 @@ end
 U    = 0.09;            % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'cubic';         % Noninteracting band-dispersion 
+latt = 'bcc';           % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
