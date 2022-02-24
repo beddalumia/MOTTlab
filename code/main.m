@@ -14,18 +14,18 @@ end
 U    = 0.09;            % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'bcc';           % Noninteracting band-dispersion 
+latt = 'square';        % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
-PLOT         = 0;       % Controls plotting of *all static* figures
+PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
-UARRAY       = 1;       % Activates SLURM scaling of interaction values
+UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
 DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
@@ -54,18 +54,6 @@ end
 
 if TARRAY
    beta = beta*aID;
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-switch latt
-
-    case {'square','cubic','bcc'}
-
-        fprintf(2,'SLOW-RUN: %s lattice requires symbolic computations \n',latt);
-
-    otherwise
-
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

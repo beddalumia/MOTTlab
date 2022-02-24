@@ -95,13 +95,16 @@ function k = elliptic(m)
 % NB: it requires Symbolic Math Toolbox! For real m we could use the faster 
 %     and built-in ellipke(m), but here we unfortunately need { m ∈ ℂ }
 %
-                                                            global DEBUG
-if(DEBUG)
-   fprintf('Vectorized ellipticK evaluation..');
-end
-k = ellipticK(m);
-if(DEBUG)
-   fprintf('.DONE!\n');
-end
-%
+                                                          global FAST DEBUG
+  k = math.cellke(m);                                                               
+  if DEBUG && not(FAST)
+     fprintf('Vectorized ellipticK evaluation..');
+     K = ellipticK(m);
+     fprintf('.DONE!\n');
+     err = norm(k-K)/numel(m);
+     if err > eps
+        warning('CELLKE and ELLIPTICK do not match: %f discrepancy!',err);
+        k = K; % Fall back to the reliable (but slow) sym function
+     end
+  end
 end
