@@ -14,7 +14,7 @@ end
 U    = 0.09;            % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'square';        % Noninteracting band-dispersion 
+latt = 'cubic';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
@@ -96,7 +96,7 @@ if not( ULINE || TLINE || UTSCAN )
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
-    writematrix(U,sprintf('U%f.dat',U));
+    writematrix(U,sprintf('U%f_HU.dat',U));
     writematrix(I,sprintf('U%f_IL.dat',U)); 
     writematrix(Z,sprintf('U%f_ZF.dat',U)); 
     writematrix(S,sprintf('U%f_SR.dat',U));
