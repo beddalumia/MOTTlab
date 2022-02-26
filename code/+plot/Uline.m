@@ -1,7 +1,7 @@
 function line = Uline(Z,I,beta,Umin,Ustep,Umax)
     line = figure("Name",'U-driven MIT');
     U = Umin:Ustep:Umax;
-    scatter(2.*U,Z,'k','filled'); hold on
+    scatter(2.*U,Z,'k','filled'); hold on; box on;
     scatter(2.*U,I,'r','filled'); % (Units: D=2t)
     title(sprintf('IPT  |  U-driven MIT at T = %f',1/beta))
     xlabel('$U/t$','Interpreter','latex')
