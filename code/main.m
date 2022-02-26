@@ -25,6 +25,7 @@ UTSCAN       = 0;       % Ignores both given U and beta values and builds a full
 SPECTRAL     = 0;       % Controls plotting of spectral functions
 PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
+PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
 DEBUG        = 0;       % Activates debug prints / plots / operations
@@ -84,10 +85,12 @@ if not( ULINE || TLINE || UTSCAN )
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));
-    writematrix(U,sprintf('U%f_HU.dat',U));
-    writematrix(I,sprintf('U%f_IL.dat',U)); 
-    writematrix(Z,sprintf('U%f_ZF.dat',U)); 
-    writematrix(S,sprintf('U%f_SR.dat',U));
+    if PRINT
+        writematrix(U,sprintf('U%f_HU.dat',U));
+        writematrix(I,sprintf('U%f_IL.dat',U)); 
+        writematrix(Z,sprintf('U%f_ZF.dat',U)); 
+        writematrix(S,sprintf('U%f_SR.dat',U));
+    end
 end
 
 if ULINE

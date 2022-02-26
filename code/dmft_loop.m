@@ -57,7 +57,7 @@ quiet = strcmp(pmode,'quiet');
     while LOOP
         
         % Weiss field from local Green's function
-            g0 = 1 ./ (w + eta - 0.25 .* gloc);
+            g0 = 1 ./ (w + eta - hybr(D,dos,gloc));
             
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
@@ -107,6 +107,36 @@ quiet = strcmp(pmode,'quiet');
     
 end
 
+function h = hybr(D,DOS,GLOC)
 
+    switch DOS
 
+        case {'bethe','chain'}
 
+            t = D/2;
+
+        case 'square'
+
+            t = D/4;
+
+        case {'sc','cubic'}
+
+            t = D/6;
+
+        case 'bcc'
+
+            t = D/8;
+
+        case 'honey'
+
+            t = 2*D/3;
+
+        otherwise
+
+            error('Invalid lattice');
+
+    end
+
+    h = t^2*GLOC;
+
+end
