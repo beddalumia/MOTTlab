@@ -11,8 +11,8 @@ try
 end
 
 %% INPUT: Physical Parameters 
-D    = 1;               % Bandwidth
-U    = 0.1;             % On-site Repulsion
+D    = 4.0;             % Bandwidth
+U    = 4.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
@@ -20,7 +20,7 @@ MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott p
 ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 0;       % Controls plotting of spectral functions
+SPECTRAL     = 1;       % Controls plotting of spectral functions
 PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
@@ -32,11 +32,11 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^15+1;           % Energy resolution in real-frequency axis
-wcut  = 6.00;           % Energy cutoff in real-frequency axis
-Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
-Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
+wres  = 2^13+1;         % Energy resolution in real-frequency axis
+wcut  = 6.00 * D;       % Energy cutoff in real-frequency axis
+Umin  = 0.00 * D;       % Hubbard U minimum value for phase diagrams
+Ustep = 0.10 * D;       % Hubbard U incremental step for phase diagrams
+Umax  = 6.00 * D;       % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
@@ -94,8 +94,7 @@ if ULINE
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
         Z(i) = phys.zetaweight(w,sloc{i});
-        [I(i),infig] = phys.luttinger(w,sloc{i},gloc{i});
-        plot.push_frame('luttok.gif',i,mloop,dt,infig);
+        I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)

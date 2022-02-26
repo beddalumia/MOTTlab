@@ -1,4 +1,4 @@
-function im_sloc = sopt(A,F,U)
+function iS = sopt(A,F,U)
 %% SOPT stands for Second Order Perturbation Theory:
 %  it computes the imag of the 2nd order diagram for the self-energy
 %
@@ -58,7 +58,7 @@ end
      D = D + flip(D); % flip{v(1:end)}=v(end:1)
 
   %% Imaginary part of the Self-Energy according to SOPT
-     im_sloc = -pi * U^2 * D;
+     iS = -pi * U^2 * D;
      
 end
 

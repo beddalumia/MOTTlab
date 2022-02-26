@@ -35,7 +35,7 @@ function [gloc,sloc] = dmft_loop(gloc,w,D,U,beta,mloop,mix,err,pmode)
 %
 %% BSD 3-Clause License
 %
-%  Copyright (c) 2020, Gabriele Bellomia
+%  Copyright (c) 2020-2022, Gabriele Bellomia
 %  All rights reserved.
 
 if(~exist('pmode','var'))
@@ -55,7 +55,7 @@ quiet = strcmp(pmode,'quiet');
     while LOOP
         
         % Weiss field from local Green's function
-            g0 = 1 ./ (w + eta - 0.25 .* gloc);
+            g0 = 1 ./ (w + eta - 0.25*D^2 .* gloc);
             
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
