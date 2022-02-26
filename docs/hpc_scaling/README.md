@@ -58,4 +58,6 @@ In conclusion I would suggest to perform single runs just on your personal works
 
 ## Distributed computing
 
-At the moment no distributed computing support is provided for the package. Since the convergence of the scans (both lines and phase diagrams) is highly aided by a restarting protocol (making each single-point run dependent on the previous one) and even more the DMFT-loop is inherently all-entangled, there is no simple target for a MPI-like parallelization. Furthermore the overall performance of the current workflows seems quite acceptable to just discard the idea.
+Some form of distrubuted computing is implemented for only the two-dimensional phase diagrams: the external (temperature) loops are parallelized through the native `parfor` construct, which autodetects the number of available physical cores and activates a corresponding number of independent 'workers'. This is reasonable within the assumption that each internal U-driven line starts at a sufficiently low interaction, so to make unuseful a restarting protocol that connects lines at different temperatures. No profiling has been done so far on this procedure.
+
+> NB. If the Parallel Computing Toolbox is not installed (or if you are running GNU Octave) the `parfor` construct acts as an alias of the traditional sequential `for` loop.

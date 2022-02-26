@@ -11,21 +11,22 @@ try
 end
 
 %% INPUT: Physical Parameters 
-D    = 4.0;             % Bandwidth
-U    = 4.0;             % On-site Repulsion
+D    = 1.0;             % Bandwidth
+U    = 3.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
-UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 1;       % Controls plotting of spectral functions
+UTSCAN       = 1;       % Ignores both given U and beta values and builds a full phase diagram
+SPECTRAL     = 0;       % Controls plotting of spectral functions
 PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
-TARRAY       = 0;       % Activates SLURM scaling of temperature values                    
-DEBUG        = 1;       % Activates debug prints / plots / operations
+TARRAY       = 0;       % Activates SLURM scaling of temperature values 
+RESTART      = 1;       % Activates the restarting strategies for lines               
+DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
@@ -38,7 +39,7 @@ Umin  = 0.00 * D;       % Hubbard U minimum value for phase diagrams
 Ustep = 0.10 * D;       % Hubbard U incremental step for phase diagrams
 Umax  = 6.00 * D;       % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
-Tstep = 1e-3;           % Temperature incremental step for phase diagrams
+Tstep = 1e-2;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
 dt    = 0.05;           % Frame duration in seconds (for GIF plotting)
 
@@ -63,9 +64,9 @@ w = linspace(-wcut,wcut,wres);
 
 % Initial guess for the local Green's function
 if MottBIAS
-   gloc_0 = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
+   seed = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   gloc_0 = phys.bethe(w + 10^(-3)*1i,D); % D is the DOS "radius"
+   seed = phys.bethe(w + 10^(-3)*1i,D);
 end
 
 %% Workflows
@@ -73,7 +74,7 @@ end
 if not( ULINE || TLINE || UTSCAN )
     %% Single (U,T) point
     fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta); tic
-    [gloc,sloc] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err);
+    [gloc,sloc] = dmft_loop(seed,w,D,U,beta,mloop,mix,err);
     Z = phys.zetaweight(w,sloc);
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
@@ -87,12 +88,17 @@ end
 if ULINE
     %% U-driven MIT line [given T]
     fprintf('U-driven span @ T = %f\n\n',1/beta); tic
-    clear('gloc','sloc','Z','I','S')
+    clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
+    gloc_0 = seed; gloc = cell(NU,1); sloc = gloc;
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1);
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
+        if(RESTART)
+           gloc_0 = gloc{i}; 
+        end
         Z(i) = phys.zetaweight(w,sloc{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
@@ -112,10 +118,15 @@ if TLINE
     fprintf('T-driven span @ U = %f\n\n',U); tic
     clear('gloc','sloc','Z','I','S')
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
+    gloc_0 = seed; gloc = cell(NT,1); sloc = gloc;
+    Z = zeros(NT,1); I = zeros(NT,1); S = zeros(NT,1);
     for i = 1:NT 
         T = Tvec(i); beta = 1/T;
         fprintf('< T = %f\n',T);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
+        if(RESTART)
+           gloc_0 = gloc{i}; 
+        end
         Z(i) = phys.zetaweight(w,sloc{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
@@ -134,23 +145,31 @@ if UTSCAN
     %% Full Phase-Diagram [U-driven]
     fprintf('Full phase diagram\n\n'); tic; 
     clear('gloc','sloc','Z','I','S')
-    %restart_gloc = gloc_0;
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
-    for i = 1:NT 
+    gloc = cell(NT,NU); sloc = gloc;
+    Z = zeros(NT,NU);  I = Z; S = Z;
+    feature('numcores');
+    parfor i = 1:NT 
         T = Tvec(i); beta = 1/T;
+        gloc_0 = seed;
         for j = 1:NU  
             U = Uvec(j);
             fprintf('< U = %f, T = %f\n',U, T);
             [gloc{i,j},sloc{i,j}] = dmft_loop(gloc_0,w,D,U,beta,mloop,mix,err,'quiet');
-            %restart_gloc = gloc{i,j};
+            if(RESTART)
+               gloc_0 = gloc{i,j};
+            end
             Z(i,j) = phys.zetaweight(w,sloc{i,j});
             I(i,j) = phys.luttinger(w,sloc{i,j},gloc{i,j});
             S(i,j) = phys.strcorrel(w,sloc{i,j});
         end
     end
     if(PLOT)
-        phasemap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
+        S = S/max(max(S));
+        zetamap = plot.phase_diagram(Z,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
+        luttmap = plot.phase_diagram(I,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
+        strcmap = plot.phase_diagram(S,Umin,Ustep,Umax,Tmin,Tstep,Tmax);
     end
     ET = [0,0,toc]; fmt = 'hh:mm:ss.SSS';
     fprintf('> %s < elapsed time\n\n',duration(ET,'format',fmt));

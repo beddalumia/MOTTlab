@@ -20,9 +20,9 @@
 - [x] Compute the Luttinger integral, as defined in `PRB 90 075150 (2014)`. Since it appears to be quantized _at very low temperatures_, it could become the definitive **flag** for _quantum_ phase diagrams; much better than Z or S for it is an **integer**. [→ easier phase-boundary recognition!]  
     > Luttinger Theorem currently works for very low temperatures only. It might well be an inherent limitation, restricting its domain to the quantum Mott transition. Also note that to have a sharp first order step-up at the transition a very highly frequency resolution is needed, so to make the IPT solver performance-critical! [solved brilliantly with fast convolutions, see the `solver-optimization` section below]
 
-- [x] `SOLVER-OPTIMIZATION`: make the SOPT runs faster, by optimizing the needed convolutions. [implemented a pow2-optimized FFTW-based custom algorithm that actually greatly improves the cpu-time for the `wres=2^15` calculation: almost a x10 overall speedup!]
+- [x] `SOLVER-OPTIMIZATION`: make the SOPT run faster, by optimizing the needed convolutions. [implemented a pow2-optimized FFTW-based custom algorithm that actually greatly improves the cpu-time for the `wres=2^15` calculation: almost a x10 overall speedup!]
 
-- [ ] `LOOP-OPTIMIZATION`: insert a "restarting" protocol for lines and full phase diagram spans. The gloc0=0 condition appers to be too unstable to obtain accurate UC1 values. Furthermore this would most probably speed up a lot the convergence, by lowering the required number of iterations.
+- [x] `LOOP-OPTIMIZATION`: insert a "restarting" protocol for lines and full phase diagram spans. The gloc0=0 condition appers to be too unstable to obtain accurate UC1 values. Furthermore this would most probably speed up a lot the convergence, by lowering the required number of iterations.
 
 - [x] `HPC-OPTIMIZATION`: configure an interface to cluster facilities and define the scheduling resources for optimal running [no distributed computing, just built-in handling of shared-memory parallelization]  
 

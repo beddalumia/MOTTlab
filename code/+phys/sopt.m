@@ -40,7 +40,7 @@ else
      
 end
 
-if FAST && DEBUG
+if FAST & DEBUG % Avoiding && due to parfors...
   %% Cross-Check
      P_test = conv(A,A,'same');
      err1 = norm(P_test-P)/norm(P_test);
