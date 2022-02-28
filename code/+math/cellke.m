@@ -1,5 +1,5 @@
 function [k,e] = cellke(m,tol)
-%% CELLKE Complete elliptic integral. Allowing complex input.
+%% CELLKE Complete elliptic integrals. Allowing complex input.
 %   [K,E] = CELLKE(M) returns the value of the complete elliptic
 %   integrals of the first and second kinds, evaluated for each
 %   element of M. Domain: M ∈ ℂ (see [2] for details).
@@ -35,49 +35,53 @@ function [k,e] = cellke(m,tol)
 %  Copyright (c) 2022, Gabriele Bellomia
 %  All rights reserved.
 
-if nargin<1
-  error('Not enough input arguments.'); 
-end
+  if nargin<1
+    error('Not enough input arguments.'); 
+  end
 
-classin = superiorfloat(m);
+  classin = superiorfloat(m);
 
-if nargin<2, tol = eps(classin); end
+  if nargin<2, tol = eps(classin); end
 
-if isempty(m), k = zeros(size(m),classin); e = k; return, end
+  if isempty(m), k = zeros(size(m),classin); e = k; return, end
 
-if ~isreal(tol)
-    error('Second argument TOL must be real.');
-end
+  if ~isreal(tol)
+      error('Second argument TOL must be real.');
+  end
 
-if ~isscalar(tol) || tol < 0 || ~isfinite(tol)
-  error('Second argument TOL must be a finite nonnegative scalar.');
-end
+  if ~isscalar(tol) || tol < 0 || ~isfinite(tol)
+    error('Second argument TOL must be a finite nonnegative scalar.');
+  end
 
-a0 = 1;
-b0 = sqrt(1-m);
-c0 = NaN;
-s0 = m;
-i1 = 0; mm = Inf;
-while mm > tol
-    a1 = (a0+b0)/2;
-    b1 = sqrt(a0.*b0);
-    c1 = (a0-b0)/2;
-    i1 = i1 + 1;
-    w1 = 2^i1*norm(c1).^2;
-    mm = max(w1(:));
-    
-    % Test for stagnation (may happen for TOL < machine precision)
-    if isequal(c0, c1)
-        error('CELLKE did not converge. Consider increasing TOL.');
-    end
-    
-    s0 = s0 + w1;  
-    a0 = a1;  b0 = b1;  c0 = c1;
-end
-k = pi./(2*a1);
-e = k.*(1-s0/2);
-im = find(m==1);
-if ~isempty(im)
-    e(im) = ones(length(im),1);
-    k(im) = inf;
+  a0 = 1;
+  b0 = sqrt(1-m);
+  c0 = NaN;
+  s0 = m;
+  i1 = 0; 
+  mm = Inf;
+
+  while mm > tol
+        a1 = (a0+b0)/2;
+        b1 = sqrt(a0.*b0);
+        c1 = (a0-b0)/2;
+        i1 = i1 + 1;
+        w1 = 2^i1*norm(c1).^2;
+        w2 = 2^i1*c1.^2;
+        mm = max(w1(:));
+        % Test for stagnation (may happen for TOL < machine precision)
+        if isequal(c0, c1)
+            error('CELLKE did not converge. Consider increasing TOL.');
+        end
+        s0 = s0 + w2;  
+        a0 = a1;  b0 = b1;  c0 = c1;
+  end
+
+  k = pi./(2*a1);
+  e = k.*(1-s0/2);
+  im = find(m==1);
+  if ~isempty(im)
+      e(im) = ones(length(im),1);
+      k(im) = inf;
+  end
+
 end
