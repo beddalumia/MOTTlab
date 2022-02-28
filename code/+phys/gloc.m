@@ -97,7 +97,7 @@ function k = elliptic(m)
 %
                                                           global FAST DEBUG
   k = math.cellke(m);                                                               
-  if DEBUG && not(FAST)
+  if DEBUG & not(FAST) % Avoiding && due to parfors...
      fprintf('Vectorized ellipticK evaluation..');
      K = ellipticK(m);
      fprintf('.DONE!\n');
