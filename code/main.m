@@ -11,10 +11,10 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 3.5;             % On-site Repulsion
-beta = inf;             % Inverse Temperature
+U    = 0.0;             % On-site Repulsion
+beta = 10;              % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'bethe';         % Noninteracting band-dispersion 
+latt = 'chain';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
@@ -79,7 +79,8 @@ if not( ULINE || TLINE || UTSCAN )
     %% Single (U,T) point
     fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta); tic
     [gloc,sloc] = dmft_loop(seed,w,U,beta,D,latt,mloop,mix,err);
-    [iv,gmatsu] = phys.matsubara(w,gloc,beta,vcut); M = imag(gmatsu(1));
+    [iv,gmatsu] = phys.matsubara(w,gloc,beta,vcut); m = imag(gmatsu(1));
+    [iv,smatsu] = phys.matsubara(w,sloc,beta,vcut); z = 1/(1-imag(smatsu(1))/iv(1));
     Z = phys.zetaweight(w,sloc);
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
@@ -93,7 +94,7 @@ if not( ULINE || TLINE || UTSCAN )
         writematrix(I,sprintf('U%f_IL.dat',U)); 
         writematrix(Z,sprintf('U%f_ZF.dat',U)); 
         writematrix(S,sprintf('U%f_SR.dat',U));
-        writematrix(M,sprintf('U%f_MT.dat',U));
+        writematrix(m,sprintf('U%f_MT.dat',U));
     end
 end
 
@@ -102,13 +103,14 @@ if ULINE
     fprintf('U-driven span @ T = %f\n\n',1/beta); tic
     clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
-    gloc_0 = seed; gloc = cell(NU,1); sloc = gloc; gmatsu = gloc;
-    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); M = zeros(NU,1);
+    gloc_0 = seed; gloc = cell(NU,1); sloc = gloc; gmatsu = gloc; smatsu = sloc;
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = zeros(NU,1); z = zeros(NU,1);
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
-        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut); M(i) = imag(gmatsu{i}(1));
+        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut,1e3); m(i) = imag(gmatsu{i}(1));
+        [iv,smatsu{i}] = phys.matsubara(w,sloc{i},beta,vcut); z(i) = 1/(1-imag(smatsu{i}(1))/iv(1));
         if(RESTART)
            gloc_0 = gloc{i}; 
         end
@@ -117,7 +119,7 @@ if ULINE
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(M,I,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(Z,z,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);
@@ -132,12 +134,12 @@ if TLINE
     clear('gloc','sloc','Z','I','S')
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
     gloc_0 = seed; gloc = cell(NT,1); sloc = gloc; gmatsu = gloc;
-    Z = zeros(NT,1); I = zeros(NT,1); S = zeros(NT,1); M = zeros(NT,1);
+    Z = zeros(NT,1); I = zeros(NT,1); S = zeros(NT,1); m = zeros(NT,1);
     for i = 1:NT 
         T = Tvec(i); beta = 1/T;
         fprintf('< T = %f\n',T);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
-        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut); M(i) = imag(gmatsu{i}(1));
+        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut); m(i) = imag(gmatsu{i}(1));
         if(RESTART)
            gloc_0 = gloc{i}; 
         end
@@ -162,7 +164,7 @@ if UTSCAN
     Tvec = Tmin:Tstep:Tmax; NT = length(Tvec);
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     gloc = cell(NT,NU); sloc = gloc; gmatsu = gloc;
-    Z = zeros(NT,NU);  I = Z; S = Z; M = Z;
+    Z = zeros(NT,NU);  I = Z; S = Z; m = Z;
     feature('numcores');
     parfor i = 1:NT 
         T = Tvec(i); beta = 1/T;
@@ -171,7 +173,7 @@ if UTSCAN
             U = Uvec(j);
             fprintf('< U = %f, T = %f\n',U, T);
             [gloc{i,j},sloc{i,j}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
-            [iv,gmatsu{i,j}] = phys.matsubara(w,gloc{i,j},beta,vcut); M(i,j) = imag(gmatsu{i,j}(1));
+            [iv,gmatsu{i,j}] = phys.matsubara(w,gloc{i,j},beta,vcut); m(i,j) = imag(gmatsu{i,j}(1));
             if(RESTART)
                gloc_0 = gloc{i,j};
             end
