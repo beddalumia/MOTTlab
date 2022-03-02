@@ -45,7 +45,9 @@
 
 ## Milestone III: imaginary-axis formalism and new entries to the zoo
 
-- [ ] Write a Matsubara solver and overload the existing function to work with imaginary frequencies.
+- [x] Write an efficient analytic continuation to the imaginary-axis, so to retrieve the Matsubara representation of gloc and sloc.
+
+- [ ] Overload the quantities that can be computed with both real- and imaginary-axis formalism. Determine which version is to be preferred and when.
 
 - [ ] Add relevant quantities that are accessible only via Mastubara summations [e.g. double occupancy, ref. to `Phys. Rev. B 93, 155162 (2016)`]
 
