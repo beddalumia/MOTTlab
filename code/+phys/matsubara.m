@@ -1,23 +1,29 @@
-function [iw,Giw,Gtau] = matsubara(Gw,Sw,D,dos,beta)
-%% Computes the noninteracting Thermal Green's function
+function [v,Giv] = matsubara(w,Gw,beta,vcut)
+%% Computes the interacting thermal Green's function
 %
 %           +inf
 %           ⌠
-%           ⎮  dw      DOS(w)
-%   G(iw) = ⎮ ────  ───────────,  iw = (2n+1)πT
-%           ⎮  2π    iw  -  w
+%           ⎮       A(ω)    
+%   G(iν) = ⎮ dω ──────────,  ν = (2n+1)πT
+%           ⎮     iν  -  ω  
 %           ⌡
 %        -inf
 
-    if isinf(beta)
-       error('No zero temperature overloading for matsubara frequencies defined yet.')
+    if beta > 1e4
+       T = 1/1e04;
+    else
+       T = 1/beta;
     end
 
-    % Define the Fermionic thermal frequencies
-    iw = pi/beta .* (1:2:1024);
-    % Compute G(iw) by Hilbert transformation
-    Giw = phys.gloc(1i*iw,D,dos) / pi*2;
-    % Compute G(τ) by Fourier transformation 
-    Gtau = fft(Giw);
-
+    % Define the interacting spectral function A(w)
+    Aw = -imag(Gw)/pi;
+    % Define the Fermionic thermal frequencies ν
+    v = (pi*T):(2*pi*T):(vcut); N = length(v);
+    % Compute G(iν) by Hilbert transformation
+    Giv = zeros(N,1); dw = abs(w(2)-w(1));
+    for n = 1:N
+        dGiv = dw * Aw ./ (1i*v(n) - w);
+        Giv(n)  = sum(dGiv);
+    end
+    
 end
