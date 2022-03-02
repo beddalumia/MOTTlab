@@ -16,14 +16,27 @@ function [v,Giv] = matsubara(w,Gw,beta,vcut)
     end
 
     % Define the interacting spectral function A(w)
-    Aw = -imag(Gw)/pi;
+    Aw = -imag(Gw)/pi; Nreal = length(Aw);
     % Define the Fermionic thermal frequencies ν
-    v = (pi*T):(2*pi*T):(vcut); N = length(v);
+    v = (pi*T):(2*pi*T):(vcut); Nmats = length(v);
     % Compute G(iν) by Hilbert transformation
-    Giv = zeros(N,1); dw = abs(w(2)-w(1));
-    for n = 1:N
+    Giv = zeros(Nmats,1); dw = abs(w(2)-w(1));
+    for n = 1:Nmats
         dGiv = dw * Aw ./ (1i*v(n) - w);
         Giv(n)  = sum(dGiv);
+    end
+    Giv = Giv.';
+    % Vectorized form
+    matV = repmat(v,Nreal,1);
+    matA = repmat(Aw',1,Nmats);
+    matW = repmat(w',1,Nmats);
+    dw   = abs(w(2)-w(1));
+    dGiv = dw * matA ./ (1i*matV - matW);
+    Gvec = sum(dGiv);
+    
+    if any(abs(Gvec-Giv)>eps)
+       warning('Vectorization reduces accuracy')
+       norm(Gvec-Giv)
     end
     
 end
