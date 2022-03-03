@@ -12,9 +12,9 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
-beta = 25;              % Inverse Temperature
+beta = 1e3;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'bethe';         % Noninteracting band-dispersion 
+latt = 'square';        % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
@@ -35,10 +35,10 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^15;           % Energy resolution in real-frequency axis
+mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
+wres  = 2^14;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
-vcut  = 4.00;           % Energy cutoff in imag-frequency axis
+vcut  = 50.0;           % Energy cutoff in imag-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
 Umax  = 4.00;           % Hubbard U maximum value for phase diagrams
@@ -105,23 +105,26 @@ if ULINE
     clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     gloc_0 = seed; gloc = cell(NU,1); sloc = gloc; gmatsu = gloc; smatsu = sloc;
-    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = zeros(NU,1); z = zeros(NU,1);
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = Z; z = Z; d = Z; n = Z; e = Z;
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
-        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut,1e3); m(i) = imag(gmatsu{i}(1));
+        [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut); m(i) = imag(gmatsu{i}(1));
         [iv,smatsu{i}] = phys.matsubara(w,sloc{i},beta,vcut);
         if(RESTART)
            gloc_0 = gloc{i}; 
         end
         Z(i) = phys.zetaweight(w,sloc{i}); 
         z(i) = phys.zetaweight(iv,smatsu{i});
+        n(i) = phys.dens(w,gloc{i});
+        d(i) = phys.docc(iv,smatsu{i},gmatsu{i},n(i),U);
+        e(i) = phys.lentropy(n(i),d(i));
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(Z,z,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(d,e,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);

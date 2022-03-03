@@ -50,7 +50,7 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
     end
     
     % Compute G(iν) by Hilbert transformation
-    Fiv = zeros(N,1); dw = abs(w(2)-w(1));
+    Fiv = zeros(1,N); dw = abs(w(2)-w(1));
     for n = 1:N
         dFiv = dw * Aw ./ (1i*v(n) - w);
         Fiv(n) = sum(dFiv);
