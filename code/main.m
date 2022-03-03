@@ -12,9 +12,9 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
-beta = 10;              % Inverse Temperature
+beta = 25;              % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'chain';         % Noninteracting band-dispersion 
+latt = 'bethe';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
@@ -38,10 +38,10 @@ err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
-vcut  = 3.00;           % Energy cutoff in imag-frequency axis
+vcut  = 4.00;           % Energy cutoff in imag-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
+Umax  = 4.00;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
@@ -80,8 +80,9 @@ if not( ULINE || TLINE || UTSCAN )
     fprintf('Single point evaluation @ U = %f, T = %f\n\n',U,1/beta); tic
     [gloc,sloc] = dmft_loop(seed,w,U,beta,D,latt,mloop,mix,err);
     [iv,gmatsu] = phys.matsubara(w,gloc,beta,vcut); m = imag(gmatsu(1));
-    [iv,smatsu] = phys.matsubara(w,sloc,beta,vcut); z = 1/(1-imag(smatsu(1))/iv(1));
-    Z = phys.zetaweight(w,sloc);
+    [iv,smatsu] = phys.matsubara(w,sloc,beta,vcut);
+    Z = phys.zetaweight(w,sloc); 
+    z = phys.zetaweight(iv,smatsu);
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
     if(PLOT && SPECTRAL)
@@ -110,11 +111,12 @@ if ULINE
         fprintf('< U = %f\n',U);
         [gloc{i},sloc{i}] = dmft_loop(gloc_0,w,U,beta,D,latt,mloop,mix,err,'quiet');
         [iv,gmatsu{i}] = phys.matsubara(w,gloc{i},beta,vcut,1e3); m(i) = imag(gmatsu{i}(1));
-        [iv,smatsu{i}] = phys.matsubara(w,sloc{i},beta,vcut); z(i) = 1/(1-imag(smatsu{i}(1))/iv(1));
+        [iv,smatsu{i}] = phys.matsubara(w,sloc{i},beta,vcut);
         if(RESTART)
            gloc_0 = gloc{i}; 
         end
-        Z(i) = phys.zetaweight(w,sloc{i});
+        Z(i) = phys.zetaweight(w,sloc{i}); 
+        z(i) = phys.zetaweight(iv,smatsu{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
