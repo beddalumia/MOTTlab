@@ -43,7 +43,11 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
     Aw = -imag(Fw)/pi;
     
     % Define the Fermionic thermal frequencies ν
-    v = (pi*T):(2*pi*T):(vcut); N = length(v);
+    if pi*T < vcut
+       v = (pi*T):(2*pi*T):(vcut); N = length(v);
+    else
+       error('Whooops, vcut < πT, matsubara aborting!'); 
+    end
     
     % Compute G(iν) by Hilbert transformation
     Fiv = zeros(N,1); dw = abs(w(2)-w(1));
