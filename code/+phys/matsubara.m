@@ -73,11 +73,9 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
     end
     
     % Compute F(iν) by Hilbert transformation
-    Fiv = zeros(1,N); tol = 1e-3;
-    for n = 1:N
-        fiv = @(x) Aw(x) ./ (1i*v(n) - x);
-        Fiv(n) = integral(fiv,w(1),w(end),'RelTol',tol);
-    end
+    tol = 1e-3;
+    fiv = @(x) Aw(x) ./ (1i*v - x);
+    Fiv = integral(fiv,w(1),w(end),'RelTol',tol,'ArrayValued',true);
     
     if any(abs(Fiv-Ftest)>tol)
        warning('Problems with quad integration: err = %f',norm(Fiv-Ftest)/norm(Ftest)); 
