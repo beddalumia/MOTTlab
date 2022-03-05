@@ -19,7 +19,7 @@ latt = 'bethe';         % Noninteracting band-dispersion
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
