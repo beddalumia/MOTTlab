@@ -58,12 +58,16 @@ function docc = docc(iv,smatsu,gmatsu,uloc)
     % Noninteracting double occupancy
     docc = 0.25;
     
+    % More fermionic frequencies (for tail correction)
+    iw = iv(end):2*iv(1):1000; % iω = iν = i(2n+1)πT
+    
     % Interacting double occupancy
     if uloc > 0
        beta = pi/iv(1);
        epot = 2/beta * sum(real(smatsu.*gmatsu));
+       tail = uloc^2/4 * ( sum(1./(iw).^2) - 1/iv(end)^2 );
        ehar = (0.5 - dens)/2 * uloc;
-       docc = (epot - ehar)  / uloc;
+       docc = (epot + tail - ehar)  / uloc;
     end
     
 end
