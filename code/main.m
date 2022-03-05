@@ -12,9 +12,9 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
-beta = 1e3;             % Inverse Temperature
+beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'square';        % Noninteracting band-dispersion 
+latt = 'bethe';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
@@ -36,7 +36,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
-wres  = 2^14;           % Energy resolution in real-frequency axis
+wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 vcut  = 50.0;           % Energy cutoff in imag-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
@@ -117,14 +117,12 @@ if ULINE
         end
         Z(i) = phys.zetaweight(w,sloc{i}); 
         z(i) = phys.zetaweight(iv,smatsu{i});
-        n(i) = phys.dens(w,gloc{i});
-        d(i) = phys.docc(iv,smatsu{i},gmatsu{i},n(i),U);
-        e(i) = phys.lentropy(n(i),d(i));
+        e(i) = phys.lentropy(iv,smatsu{i},gmatsu{i},U);
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(d,e,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(z,e,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);

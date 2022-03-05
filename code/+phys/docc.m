@@ -1,11 +1,18 @@
-function docc = docc(iw,sloc,gloc,dens,u)
+function docc = docc(iv,smatsu,gmatsu,uloc)
 
+    % Density (hardcoded to half-filling)
+    dens = 1.00;
+    
+    % Noninteracting double occupancy
     docc = 0.25;
-    if u > 0
-       beta = pi/iw(1);
-       epot = 2/beta * sum(real(sloc.*gloc));
-       ehar = (0.5-dens)*u/2;
-       docc = (epot-ehar)/u;
+    
+    % Interacting double occupancy
+    % > see Phys. Rev. B 93 155162
+    if uloc > 0
+       beta = pi/iv(1);
+       epot = 2/beta * sum(real(smatsu.*gmatsu));
+       ehar = (0.5 - dens)/2 * uloc;
+       docc = (epot - ehar)  / uloc;
     end
-
+    
 end
