@@ -27,7 +27,7 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
 %  All rights reserved.
 
     if nargin < 5
-       bcut = 1e4; 
+       bcut = 1e3; 
     end
 
     if beta > bcut
