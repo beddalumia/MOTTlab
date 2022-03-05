@@ -12,7 +12,7 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
-beta = inf;             % Inverse Temperature
+beta = 1e3;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
@@ -41,7 +41,7 @@ wcut  = 6.00;           % Energy cutoff in real-frequency axis
 vcut  = 50.0;           % Energy cutoff in imag-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 4.00;           % Hubbard U maximum value for phase diagrams
+Umax  = 4.50;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
