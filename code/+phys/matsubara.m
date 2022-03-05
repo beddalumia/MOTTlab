@@ -39,8 +39,6 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
        T = 1/beta;
     end
     
-    %% DIRECT SUM-OVER-ALL-W
-    
     % Define the interacting spectral function A(ω)
     Aw = -imag(Fw)/pi;
     
@@ -52,6 +50,8 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
     end
     
     % Compute F(iν) by Hilbert transformation
+    
+    %% DIRECT SUM-OVER-ALL-W IN A IW LOOP
     Fiv = zeros(1,N); dw = abs(w(2)-w(1));
     for n = 1:N
         dFiv = dw * Aw ./ (1i*v(n) - w);
@@ -60,25 +60,14 @@ function [v,Fiv] = matsubara(w,Fw,beta,vcut,bcut)
     
     Ftest = Fiv;
     
-    %% ADAPTIVE QUADRATURE
+    %% HANDLE-VECTORIZED SUM-OVER-ALL-W
+    dw = abs(w(2)-w(1));
+    dFiv = @(z) dw * Aw' ./ (z - w');
+    Fiv = sum(dFiv(1i*v));
     
-    % Define the interacting spectral function A(ω)
-    Aw = @(x) -imag(interp1(w,Fw,x,'nearest'))/pi;
-    
-    % Define the Fermionic thermal frequencies ν
-    if pi*T < vcut
-       v = (pi*T):(2*pi*T):(vcut); N = length(v);
-    else
-       error('Whooops, vcut < πT, matsubara aborting!'); 
-    end
-    
-    % Compute F(iν) by Hilbert transformation
-    tol = 1e-3;
-    fiv = @(x) Aw(x) ./ (1i*v - x);
-    Fiv = integral(fiv,w(1),w(end),'RelTol',tol,'ArrayValued',true);
-    
-    if any(abs(Fiv-Ftest)>tol)
-       warning('Problems with quad integration: err = %f',norm(Fiv-Ftest)/norm(Ftest)); 
+    err = norm(Fiv-Ftest)/norm(Ftest);
+    if err > 10*eps
+       warning('problems with vectorization? err = %.16f',err); 
     end
     
 end
