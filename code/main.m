@@ -12,7 +12,7 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
-beta = 1e3;             % Inverse Temperature
+beta = 300;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
@@ -35,7 +35,7 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.50;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 vcut  = 50.0;           % Energy cutoff in imag-frequency axis
@@ -105,7 +105,7 @@ if ULINE
     clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     gloc_0 = seed; gloc = cell(NU,1); sloc = gloc; gmatsu = gloc; smatsu = sloc;
-    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = Z; z = Z; d = Z; n = Z; e = Z;
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = Z; z = Z; d = Z; n = Z; d = Z;
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
@@ -117,12 +117,12 @@ if ULINE
         end
         Z(i) = phys.zetaweight(w,sloc{i}); 
         z(i) = phys.zetaweight(iv,smatsu{i});
-        e(i) = phys.lentropy(iv,smatsu{i},gmatsu{i},U);
+        d(i) = phys.docc(iv,smatsu{i},gmatsu{i},U);
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(z,e,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(Z,d,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);
