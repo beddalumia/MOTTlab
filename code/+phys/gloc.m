@@ -78,33 +78,28 @@ function gloc = gloc(zeta,D,lattice)
 end
 
 function k = elliptic(m)
-%% elliptic(m,str) wraps ellipticK(m) which in turn evaluates:
+% ELLIPTIC(m) wraps a homebrew variant of ellipke allowing a numerical*
+% evaluation of the complete elliptic integral of the first kind:
 %
-%       π
-%       ─
-%       2
-%       ⌠
-%       ⎮         dϕ
-%       ⎮ ────────────────── 
-%       ⎮    _______________
-%       ⎮   ╱          2
-%       ⎮ ╲╱  1 - m⋅sin (ϕ)
-%       ⌡
-%       0
+%                 π
+%                 ─
+%                 2
+%                 ⌠
+%                 ⎮         dϕ
+%                 ⎮ ────────────────── ,  >>> for m ∈ ℂ <<<
+%                 ⎮    _______________
+%                 ⎮   ╱          2
+%                 ⎮ ╲╱  1 - m⋅sin (ϕ)
+%                 ⌡
+%                 0
 %
-% NB: it requires Symbolic Math Toolbox! For real m we could use the faster 
-%     and built-in ellipke(m), but here we unfortunately need { m ∈ ℂ }
+% *It can be benchmarked with a reliable (but severely slower) symbolic 
+%  implementation provided by MathWorks within the Symbolic Math Toolbox,
+%  namely ellipticK(m). Here we remove any explicit test to keep the DEBUG 
+%  mode actually runnable and avoid any needless dependency on toolboxes.
 %
-                                                               global DEBUG
-  k = math.cellke(m);                                                               
-  if DEBUG
-     fprintf('Vectorized ellipticK evaluation..');
-     K = ellipticK(m);
-     fprintf('.DONE!\n');
-     err = norm(k-K)/numel(m);
-     if err > eps
-        warning('CELLKE and ELLIPTICK do not match: %.16f discrepancy!',err);
-        k = K; % Fall back to the reliable (but slow) sym function
-     end
-  end
+% See also: math.cellke, ellipke, ellipticK
+
+  k = math.cellke(m);       
+  
 end
