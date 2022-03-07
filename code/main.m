@@ -11,7 +11,7 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 0.09;            % On-site Repulsion
+U    = 2.00;            % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'square';        % Noninteracting band-dispersion 
@@ -19,28 +19,28 @@ latt = 'square';        % Noninteracting band-dispersion
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
-PLOT         = 1;       % Controls plotting of *all static* figures
+PLOT         = 0;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values 
 RESTART      = 1;       % Activates the restarting strategies for lines               
-DEBUG        = 0;       % Activates debug prints / plots / operations
+DEBUG        = 1;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.50;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
+Umax  = 3.00;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
