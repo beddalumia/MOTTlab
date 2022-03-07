@@ -11,7 +11,8 @@ function [k,e] = cellke(m,tol)
 %   k instead of the parameter M. They are related by M = k^2.
 %
 %   Class support for input M:
-%      float: double, single
+%      float: double, single [MATLAB]
+%      float: double [GNU Octave]
 %
 %   CELLKE extends the native implementation provided by ELLIPKE,
 %   generalizing the method of the arithmetic-geometric mean [1],
@@ -39,7 +40,11 @@ function [k,e] = cellke(m,tol)
     error('Not enough input arguments.'); 
   end
 
-  classin = superiorfloat(m);
+  try
+    classin = superiorfloat(m); % GNU Octave compatibility
+  catch
+    classin = 'double';
+  end
 
   if nargin<2, tol = eps(classin); end
 
