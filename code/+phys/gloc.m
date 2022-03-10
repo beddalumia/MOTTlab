@@ -37,37 +37,23 @@ function gloc = gloc(zeta,D,lattice)
         
         case 'bethe'
 
-            s    = sqrt(zeta.^2 - D^2);
-            p    = sign(imag(s)) .* s;
-            gloc = 2 * (zeta - p) / D^2;
+            gloc = gloc_bethe(zeta,D);
             
-        case 'square'
+        case {'square','2d'}
             
-            invz = 1./zeta;
-            ellk = elliptic(D^2*invz.^2);
-            gloc = 2/pi.*invz.*ellk;
+            gloc = gloc_square(zeta,D);
             
-        case {'cubic','sc'}
+        case {'cubic','3d','sc'}
             
-            invd = 3/D;
-            zeta = invd.*zeta;
-            zsqr = zeta.^(-2);
-            xi   = sqrt(1-sqrt(1-zsqr)) ./ sqrt(1+sqrt(1-9.*zsqr));
-            invx = 1 ./ ((1 - xi).^3 .* (1 + 3*xi));
-            ellk = elliptic(16 .* xi.^3 .* invx);
-            gloc = invd .* (1-9.*xi.^4) .* (2/pi.*ellk).^2 .* invx ./ zeta;
+            gloc = gloc_cubic(zeta,D);
             
         case 'bcc'
             
-            zren = zeta/D;
-            ellk = elliptic(0.5 .* (1-sqrt(1-zren.^(-2))));
-            gloc = 4 ./ (pi^2 .* zeta) .* ellk.^2; 
+            gloc = gloc_bcc(zeta,D);
             
-        case 'chain'
+        case {'chain','1d'}
             
-            invz = 1./zeta;
-            fact = D.*invz;
-            gloc = invz./sqrt(1-fact.^2);
+            gloc = gloc_chain(zeta,D);
             
         otherwise
             
@@ -75,6 +61,50 @@ function gloc = gloc(zeta,D,lattice)
         
     end
     
+end
+
+function gloc = gloc_bethe(zeta,D)
+
+    s    = sqrt(zeta.^2 - D^2);
+    p    = sign(imag(s)) .* s;
+    gloc = 2 * (zeta - p) / D^2;
+
+end
+
+function gloc = gloc_square(zeta,D)
+
+    invz = 1./zeta;
+    ellk = elliptic(D^2*invz.^2);
+    gloc = 2/pi.*invz.*ellk;
+
+end
+
+function gloc = gloc_cubic(zeta,D)
+
+    invd = 3/D;
+    zeta = invd.*zeta;
+    zsqr = zeta.^(-2);
+    xi   = sqrt(1-sqrt(1-zsqr)) ./ sqrt(1+sqrt(1-9.*zsqr));
+    invx = 1 ./ ((1 - xi).^3 .* (1 + 3*xi));
+    ellk = elliptic(16 .* xi.^3 .* invx);
+    gloc = invd .* (1-9.*xi.^4) .* (2/pi.*ellk).^2 .* invx ./ zeta;
+
+end
+
+function gloc = gloc_bcc(zeta,D)
+
+    zren = zeta/D;
+    ellk = elliptic(0.5 .* (1-sqrt(1-zren.^(-2))));
+    gloc = 4 ./ (pi^2 .* zeta) .* ellk.^2; 
+            
+end
+
+function gloc = gloc_chain(zeta,D)
+
+    invz = 1./zeta;
+    fact = D.*invz;
+    gloc = invz./sqrt(1-fact.^2);
+            
 end
 
 function k = elliptic(m)

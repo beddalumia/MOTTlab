@@ -111,15 +111,15 @@ function h = hybr(D,DOS,GLOC)
 
     switch DOS
 
-        case {'bethe','chain'}
+        case {'bethe','chain','1d'}
 
             t = D/2;
 
-        case 'square'
+        case {'square','2d'}
 
             t = D/4;
 
-        case {'sc','cubic'}
+        case {'sc','cubic','3d'}
 
             t = D/6;
 
