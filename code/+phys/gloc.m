@@ -22,11 +22,13 @@ function gloc = gloc(zeta,D,lattice)
 %
 %    where the last passage is a trick to allow U=0 (Sloc(:)=0) evaluations 
 %
-%% Theoretical Background at:
+%% References
 %
-%  http://www.physics.rutgers.edu/~haule/681/Perturbation.pdf
-%
-%  https://en.wikipedia.org/wiki/Hilbert_transform
+%  [gftools]    https://gftools.readthedocs.io/en/stable/index.html
+%  [delves]     https://doi.org/10.1006/aphy.2001.6148
+%  [kogan]      https://doi.org/10.4236/graphene.2021.101001
+%  [horiguchi]  https://doi.org/10.1063/1.1666155
+%  [morita]     https://doi.org/10.1063/1.1665693
 %
 %% BSD 3-Clause License
 %
@@ -91,6 +93,7 @@ end
 
 function gloc = gloc_square(zeta,D)
 % Square lattice (HM-2d)
+% Ref. to [kogan]
 
     invz = 1./zeta;
     ellk = elliptic(D^2*invz.^2);
@@ -100,6 +103,7 @@ end
 
 function gloc = gloc_cubic(zeta,D)
 % Simple-Cubic lattice (HM-3d)
+% Ref. to [delves]
 
     invd = 3/D;
     zeta = invd.*zeta;
@@ -113,6 +117,7 @@ end
 
 function gloc = gloc_bcc(zeta,D)
 % Body-Centered-Cubic lattice
+% Ref. to [morita]
 
     zren = zeta/D;
     ellk = elliptic(0.5 .* (1-sqrt(1-zren.^(-2))));
@@ -122,6 +127,7 @@ end
 
 function gloc = gloc_lieb(zeta,D)
 % Lieb lattice (flat-band metal)
+% Ref. to [kogan]
 
     dren = D/2^1.5;
     zren = zeta/dren;
@@ -133,6 +139,7 @@ end
 
 function gloc = gloc_honey(zeta,D)
 % Honeycomb (graphene) lattice
+% Ref. to [horiguchi]
 
     gloc = gloc_hexa(zeta,D);
 
@@ -140,6 +147,7 @@ end
 
 function gloc = gloc_hexa(zeta,D)
 % Hexagonal (triangular) lattice
+% Ref. to [horiguchi]
 
     dren = D*4/9;
     zren = zeta/dren;
