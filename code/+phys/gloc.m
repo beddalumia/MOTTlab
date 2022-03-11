@@ -141,7 +141,10 @@ function gloc = gloc_honey(zeta,D)
 % Honeycomb (graphene) lattice
 % Ref. to [horiguchi]
 
-    gloc = gloc_hexa(zeta,D);
+    dren = D/1.5;
+    zren = zeta/dren;
+    hexa = gloc_hexa(2 * zren.^2 - 1.5, 9/4);
+    gloc = 2/dren * zren .* hexa;
 
 end
 
@@ -151,6 +154,8 @@ function gloc = gloc_hexa(zeta,D)
 
     dren = D*4/9;
     zren = zeta/dren;
+    zadv = (imag(zren) < 0); 
+    zren(zadv) = conj(zren(zadv));
     sing = (zren * dren == -1); zren(sing) = 0;
     rr   = csqrt(2*zren + 3);
     gg   = 4 ./ (csqrt(rr - 1).^3 .* csqrt(rr + 3));
@@ -161,6 +166,7 @@ function gloc = gloc_hexa(zeta,D)
     ellk(ikp) = ellk(ikp) + 2i * elliptic(1 - mm(ikp));
     gloc = 1/(pi*dren) .* gg .* ellk;
     gloc(sing) = -1i*inf;
+    gloc(zadv) = conj(gloc(zadv));
     
     function s = csqrt(z)
     % appropriate branch of sqrt for the triangular lattice

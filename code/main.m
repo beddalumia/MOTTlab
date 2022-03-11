@@ -11,14 +11,14 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 0.0;             % On-site Repulsion
-beta = inf;             % Inverse Temperature
+U    = 0.1;             % On-site Repulsion
+beta = 100;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'honey';         % Noninteracting band-dispersion 
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 1;       % Controls plotting of spectral functions
@@ -39,7 +39,7 @@ wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 8.00;           % Hubbard U maximum value for phase diagrams
+Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
