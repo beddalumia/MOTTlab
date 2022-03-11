@@ -55,6 +55,10 @@ function gloc = gloc(zeta,D,lattice)
             
             gloc = gloc_chain(zeta,D);
             
+        case 'lieb'
+            
+            gloc = gloc_lieb(zeta,D);
+            
         otherwise
             
             error('Invalid lattice');
@@ -105,6 +109,16 @@ function gloc = gloc_chain(zeta,D)
     fact = D.*invz;
     gloc = invz./sqrt(1-fact.^2);
             
+end
+
+function gloc = gloc_lieb(zeta,D)
+
+    dren = D/2^1.5;
+    zren = zeta/dren;
+    peak = 1/3./zeta;
+    sqlt = gloc_square(zren.^2 - 4, 4);
+    gloc = peak + 2/3*zren/dren .* sqlt;
+
 end
 
 function k = elliptic(m)

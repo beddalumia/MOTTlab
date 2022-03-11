@@ -126,6 +126,10 @@ function h = hybr(D,DOS,GLOC)
         case 'bcc'
 
             t = D/8;
+            
+        case 'lieb'
+            
+            t = 2^1.5*D;
 
         case 'honey'
 
