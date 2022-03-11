@@ -72,6 +72,7 @@ function gloc = gloc(zeta,D,lattice)
 end
 
 function gloc = gloc_bethe(zeta,D)
+% Bethe lattice (HM-∞d)
 
     s    = sqrt(zeta.^2 - D^2);
     p    = sign(imag(s)) .* s;
@@ -79,7 +80,17 @@ function gloc = gloc_bethe(zeta,D)
 
 end
 
+function gloc = gloc_chain(zeta,D)
+% Chain (HM-1d)
+
+    invz = 1./zeta;
+    fact = D.*invz;
+    gloc = invz./sqrt(1-fact.^2);
+            
+end
+
 function gloc = gloc_square(zeta,D)
+% Square lattice (HM-2d)
 
     invz = 1./zeta;
     ellk = elliptic(D^2*invz.^2);
@@ -88,6 +99,7 @@ function gloc = gloc_square(zeta,D)
 end
 
 function gloc = gloc_cubic(zeta,D)
+% Simple-Cubic lattice (HM-3d)
 
     invd = 3/D;
     zeta = invd.*zeta;
@@ -100,6 +112,7 @@ function gloc = gloc_cubic(zeta,D)
 end
 
 function gloc = gloc_bcc(zeta,D)
+% Body-Centered-Cubic lattice
 
     zren = zeta/D;
     ellk = elliptic(0.5 .* (1-sqrt(1-zren.^(-2))));
@@ -107,15 +120,8 @@ function gloc = gloc_bcc(zeta,D)
             
 end
 
-function gloc = gloc_chain(zeta,D)
-
-    invz = 1./zeta;
-    fact = D.*invz;
-    gloc = invz./sqrt(1-fact.^2);
-            
-end
-
 function gloc = gloc_lieb(zeta,D)
+% Lieb lattice (flat-band metal)
 
     dren = D/2^1.5;
     zren = zeta/dren;
@@ -126,12 +132,14 @@ function gloc = gloc_lieb(zeta,D)
 end
 
 function gloc = gloc_honey(zeta,D)
+% Honeycomb (graphene) lattice
 
     gloc = gloc_hexa(zeta,D);
 
 end
 
 function gloc = gloc_hexa(zeta,D)
+% Hexagonal (triangular) lattice
 
     dren = D*4/9;
     zren = zeta/dren;
