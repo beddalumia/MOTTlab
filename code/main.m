@@ -14,29 +14,29 @@ end
 U    = 0.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'lieb';          % Noninteracting band-dispersion 
+latt = 'honey';         % Noninteracting band-dispersion 
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
 ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 0;       % Controls plotting of spectral functions
-PLOT         = 0;       % Controls plotting of *all static* figures
+SPECTRAL     = 1;       % Controls plotting of spectral functions
+PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values 
 RESTART      = 1;       % Activates the restarting strategies for lines               
-DEBUG        = 1;       % Activates debug prints / plots / operations
+DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
-mloop = 1.000;           % Max number of DMFT iterations 
+mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
-wcut  = 1.50;           % Energy cutoff in real-frequency axis
+wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
 Umax  = 8.00;           % Hubbard U maximum value for phase diagrams
@@ -68,7 +68,7 @@ w = linspace(-wcut,wcut,wres);
 if MottBIAS
    seed = 0; % no bath -> no Kondo resonance -> strong Mott bias :)
 else
-   seed = phys.gloc(w + 10^(-3)*1i,D,latt);
+   seed = phys.gloc(w + 1e-6*1i,D,latt);
 end
 
 %% Workflows

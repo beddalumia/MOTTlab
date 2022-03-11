@@ -59,6 +59,10 @@ function gloc = gloc(zeta,D,lattice)
             
             gloc = gloc_lieb(zeta,D);
             
+        case {'honey','honeycomb','graphene'}
+            
+            gloc = gloc_honey(zeta,D);
+            
         otherwise
             
             error('Invalid lattice');
@@ -118,6 +122,36 @@ function gloc = gloc_lieb(zeta,D)
     peak = 1/3./zeta;
     sqlt = gloc_square(zren.^2 - 4, 4);
     gloc = peak + 2/3*zren/dren .* sqlt;
+
+end
+
+function gloc = gloc_honey(zeta,D)
+
+    gloc = gloc_hexa(zeta,D);
+
+end
+
+function gloc = gloc_hexa(zeta,D)
+
+    dren = D*4/9;
+    zren = zeta/dren;
+    sing = (zren * dren == -1); zren(sing) = 0;
+    rr   = csqrt(2*zren + 3);
+    gg   = 4 ./ (csqrt(rr - 1).^3 .* csqrt(rr + 3));
+    kk   = csqrt(rr) .* gg;
+    mm   = kk.^2;
+    ellk = elliptic(mm);
+    ikp  = imag(kk) > 0;
+    ellk(ikp) = ellk(ikp) + 2i * elliptic(1 - mm(ikp));
+    gloc = 1/(pi*dren) .* gg .* ellk;
+    gloc(sing) = -1i*inf;
+    
+    function s = csqrt(z)
+    % appropriate branch of sqrt for the triangular lattice
+        s = ones(size(z));
+        s( real(z) < 0 & imag(z) < 0 ) = -1; % sign switch
+        s = s .* sqrt(z);
+    end
 
 end
 

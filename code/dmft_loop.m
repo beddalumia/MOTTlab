@@ -131,7 +131,7 @@ function h = hybr(D,DOS,GLOC)
             
             t = 2^1.5*D;
 
-        case 'honey'
+        case {'honey','honeycomb','graphene'}
 
             t = 2*D/3;
 
