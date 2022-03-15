@@ -11,7 +11,7 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 4.0;             % On-site Repulsion
+U    = 2.0;             % On-site Repulsion
 beta = 1e3;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
@@ -118,11 +118,12 @@ if ULINE
         Z(i) = phys.zetaweight(w,sloc{i}); 
         z(i) = phys.zetaweight(iv,smatsu{i});
         d(i) = phys.docc(iv,smatsu{i},gmatsu{i},U);
+        d_notail(i) = phys.docc(iv,smatsu{i},gmatsu{i},U,false);
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(Z,d,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(d,d_notail,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);

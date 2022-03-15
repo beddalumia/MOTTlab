@@ -1,4 +1,4 @@
-function docc = docc(iv,smatsu,gmatsu,uloc)
+function docc = docc(iv,smatsu,gmatsu,uloc,tail)
 %% Computes double occupancy ⟨c^†_up c_up c^†_dw c_dw⟩ via Matsubara sums
 %
 %  Input:
@@ -6,6 +6,7 @@ function docc = docc(iv,smatsu,gmatsu,uloc)
 %       smatsu  : complex valued array, matsubara self-energy, ∑(iν)
 %       gmatsu  : complex valued array, matsubara green's function, G(iν)
 %       uloc    : real double, local (on-site) Hubbard interaction, U
+%       tail    : bool, flag for tail correction [OPTIONAL, default: true]
 %   Output:
 %       docc    : real double, double occupancy, D = ⟨n_up n_dw⟩
 %
@@ -41,6 +42,10 @@ function docc = docc(iv,smatsu,gmatsu,uloc)
 %
 %             ⟨n_up n_dw⟩ = ⟨1 1⟩ = ⟨1 0⟩ = ⟨0 1⟩ = ⟨0 0⟩ = 0.25
 %
+%   A semi-analytic tail correction is implemented (but can be deactivated 
+%   by passing a suitable input flag), assuming the product ∑(iν)G(iν) to
+%   decay asymptotically as U^2/4 * 1/(iν)^2.
+%
 %   References:
 %
 %       [PRB.93.155162]  = Double occupancy in dynamical mean-field theory 
@@ -52,6 +57,10 @@ function docc = docc(iv,smatsu,gmatsu,uloc)
 %  Copyright (c) 2022, Gabriele Bellomia
 %  All rights reserved.
 
+    if nargin < 5   
+        tail = true;
+    end
+
     % Density (hardcoded to half-filling)
     dens = 1.00;
     
@@ -59,13 +68,15 @@ function docc = docc(iv,smatsu,gmatsu,uloc)
     docc = 0.25;
     
     % More fermionic frequencies (for tail correction)
-    iw = iv(end):2*iv(1):1000; % iω = iν = i(2n+1)πT
+    iw = (iv(end)+2*iv(1)):2*iv(1):1000; % iω = iν = i(2n+1)πT
     
     % Interacting double occupancy
     if uloc > 0
        beta = pi/iv(1);
        epot = 2/beta * sum(real(smatsu.*gmatsu));
-       tail = uloc^2/4 * ( sum(1./(iw).^2) - 1/iv(end)^2 );
+      if tail
+       tail = 2/beta * uloc^2/4 * sum(-1./(iw).^2);
+      end
        ehar = (0.5 - dens)/2 * uloc;
        docc = (epot + tail - ehar)  / uloc;
     end
