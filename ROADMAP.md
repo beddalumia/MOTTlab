@@ -28,6 +28,8 @@
 
 - [ ] Implement an ergonomic 'full-roundtrip' protocol, so to enable suitable explorations of the coexistence region.
 
+- [ ] Start writing markdown [docs](./docs), with the aim to document the implementation details (usage instruction should go directly on the [README](./README.md) instead...)
+  
 <!---
 #### <p align="right"> `> v1.0` </p>
 --->
@@ -68,7 +70,6 @@
 #### <p align="right"> `> v4.0`</p>
 --->
 
-# TODO
 
-- [ ] Start writing markdown [docs](./docs), with the aim to document the implementation details (usage instruction should go directly on the [README](./README.md) instead...)
+
 
