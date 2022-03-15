@@ -40,7 +40,7 @@
 
 - [ ] Rewrite the code for the particle-hole broken case so to enable even more lattices, like kagome, fcc, triangular.
 
-#### <p align="right"> [`> lattices-branch`](https://github.com/bellomia/MOTTlab/commits/lattices)</p>
+#### <p align="right"> [`> lattices-branch`](https://github.com/bellomia/MOTTlab/blob/lattices/ROADMAP.md#milestone-ii-more-lattices)</p>
 <!---
 #### <p align="right"> `> v2.0`</p>
 --->
@@ -57,7 +57,7 @@
 
 - [ ] Compute the Local Entanglement Entropy, as defined in `Rev. Mod. Phys. 80, 517 (2008)` (section V.F) and used in `Mod. Phys. Lett. B 2013 27:05` to characterize the MIT on the Bethe lattice.
 
-#### <p align="right"> [`> matsubara-branch`](https://github.com/bellomia/MOTTlab/commits/matsubara)</p>
+#### <p align="right"> [`> matsubara-branch`](https://github.com/bellomia/MOTTlab/blob/matsubara/ROADMAP.md#milestone-iii-imaginary-axis-formalism-and-new-entries-to-the-zoo)</p>
 <!---
 #### <p align="right"> `> v3.0`</p>
 --->
