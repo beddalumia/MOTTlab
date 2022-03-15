@@ -45,12 +45,17 @@
 
 ## Milestone III: imaginary-axis formalism and new entries to the zoo
 
-- [ ] Write a Matsubara solver and overload the existing function to work with imaginary frequencies.
+- [ ] Write an efficient analytic continuation to the imaginary-axis, so to retrieve the Matsubara representation of gloc and sloc.
+
+- [ ] Overload the quantities that can be computed with both real- and imaginary-axis formalism. Determine which version is to be preferred and when.
+    - [ ] Quasiparticle weight: `Z = 1/(1-Im∑(iπT)/πT)`
+    - [ ] Luttinger integral: `look at arXiv:2202.00426`
 
 - [ ] Add relevant quantities that are accessible only via Mastubara summations [e.g. double occupancy, ref. to `Phys. Rev. B 93, 155162 (2016)`]
 
 - [ ] Compute the Local Entanglement Entropy, as defined in `Rev. Mod. Phys. 80, 517 (2008)` (section V.F) and used in `Mod. Phys. Lett. B 2013 27:05` to characterize the MIT on the Bethe lattice.
 
+#### <p align="right"> [`> matsubara-branch`](https://github.com/bellomia/MOTTlab/commits/matsubara)</p>
 <!---
 #### <p align="right"> `> v3.0`</p>
 --->
