@@ -19,7 +19,7 @@ latt = 'bethe';         % Noninteracting band-dispersion
 
 %% INPUT: Boolean Flags
 MottBIAS     = 1;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
@@ -29,7 +29,7 @@ PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values 
 RESTART      = 1;       % Activates the restarting strategies for lines               
-DEBUG        = 1;       % Activates debug prints / plots / operations
+DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters

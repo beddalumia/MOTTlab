@@ -46,10 +46,10 @@ end
                                                                    
         case {'imag','imag-axis','thermal','matsubara','iw','iv'}
             
-            ds  = diff(sloc); % dSigma -> already includes dw!
+            ds  = diff(sloc); % dSigma -> already includes dw = 2πT
             g_  = gloc(1:end-1);
             integrand  = real(g_.*ds);
-            I = 2*w(1)/pi*sum(integrand);
+            I = 2/pi*1/pi*sum(integrand); % T = dw/2π
             I = abs(I); % J. Phys.: Condens. Matter 28 (2016) 025601
 if DEBUG
             Lfig = figure("Name",'Luttinger integrand','Visible','off');
