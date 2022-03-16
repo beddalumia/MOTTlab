@@ -11,15 +11,15 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 2.0;             % On-site Repulsion
-beta = 1e3;             % Inverse Temperature
+U    = 4.0;             % On-site Repulsion
+beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
                         % ['bethe','cubic','square','chain'...]
 
 %% INPUT: Boolean Flags
-MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+MottBIAS     = 1;       % Changes initial guess of gloc (strongly favours Mott phase)
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 0;       % Controls plotting of spectral functions
@@ -29,13 +29,13 @@ PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values 
 RESTART      = 1;       % Activates the restarting strategies for lines               
-DEBUG        = 0;       % Activates debug prints / plots / operations
+DEBUG        = 1;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 vcut  = 6.00;           % Energy cutoff in imag-frequency axis
@@ -84,6 +84,7 @@ if not( ULINE || TLINE || UTSCAN )
     Z = phys.zetaweight(w,sloc); 
     z = phys.zetaweight(iv,smatsu);
     I = phys.luttinger(w,sloc,gloc);
+    [L,Lfig] = phys.luttinger(iv,smatsu,gmatsu);
     S = phys.strcorrel(w,sloc);
     if(PLOT && SPECTRAL)
         [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta,D);
@@ -105,7 +106,7 @@ if ULINE
     clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     gloc_0 = seed; gloc = cell(NU,1); sloc = gloc; gmatsu = gloc; smatsu = sloc;
-    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = Z; z = Z; d = Z; n = Z; d = Z;
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); m = Z; z = Z; d = Z; L = Z; d = Z;
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
@@ -118,12 +119,12 @@ if ULINE
         Z(i) = phys.zetaweight(w,sloc{i}); 
         z(i) = phys.zetaweight(iv,smatsu{i});
         d(i) = phys.docc(iv,smatsu{i},gmatsu{i},U);
-        d_notail(i) = phys.docc(iv,smatsu{i},gmatsu{i},U,false);
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
+        L(i) = phys.luttinger(iv,smatsu{i},gmatsu{i});
         S(i) = phys.strcorrel(w,sloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(d,d_notail,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(L,I,beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);
