@@ -11,7 +11,7 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 0.1;             % On-site Repulsion
+U    = 0.0;             % On-site Repulsion
 beta = 100;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'honey';         % Noninteracting band-dispersion 
@@ -21,7 +21,7 @@ MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott p
 ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 1;       % Controls plotting of spectral functions
+SPECTRAL     = 0;       % Controls plotting of spectral functions
 PLOT         = 1;       % Controls plotting of *all static* figures
 GIF          = 0;       % Controls plotting of *animated* figures
 PRINT        = 0;       % Controls file printing (for single points)
@@ -36,7 +36,7 @@ mloop = 1000;           % Max number of DMFT iterations
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.30;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
-wcut  = 6.00;           % Energy cutoff in real-frequency axis
+wcut  = 1.50;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
 Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
@@ -80,6 +80,7 @@ if not( ULINE || TLINE || UTSCAN )
     Z = phys.zetaweight(w,sloc);
     I = phys.luttinger(w,sloc,gloc);
     S = phys.strcorrel(w,sloc);
+    [V,Vfig] = phys.dirac(w,gloc);
     if(PLOT && SPECTRAL)
         [DOS,SELF_ENERGY] = plot.spectral_frame(w,gloc,sloc,U,beta,D);
     end
@@ -99,7 +100,7 @@ if ULINE
     clear('gloc','sloc','Z','I','S'); 
     Uvec = Umin:Ustep:Umax; NU = length(Uvec);
     gloc_0 = seed; gloc = cell(NU,1); sloc = gloc;
-    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1);
+    Z = zeros(NU,1); I = zeros(NU,1); S = zeros(NU,1); V = zeros(NU,1);
     for i = 1:NU 
         U = Uvec(i);
         fprintf('< U = %f\n',U);
@@ -110,9 +111,10 @@ if ULINE
         Z(i) = phys.zetaweight(w,sloc{i});
         I(i) = phys.luttinger(w,sloc{i},gloc{i});
         S(i) = phys.strcorrel(w,sloc{i});
+        V(i) = phys.dirac(w,gloc{i});
     end
     if(PLOT)
-        u_span = plot.Uline(Z,I,beta,Umin,Ustep,Umax,D);
+        u_span = plot.Uline(Z,V/max(V),beta,Umin,Ustep,Umax,D);
     end
     if(GIF && SPECTRAL)
         plot.spectral_gif(w,gloc,sloc,Umin:Ustep:Umax,1/beta,D,dt);
