@@ -11,7 +11,7 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 0.0;             % On-site Repulsion
+U    = 4.0;             % On-site Repulsion
 beta = 100;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'honey';         % Noninteracting band-dispersion 

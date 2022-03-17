@@ -18,7 +18,9 @@ function [vF,Dfig] = dirac(w,gloc)
     w = w(w>0);
 
     % Fitting domain
-    w_th = 0.01; % threshold (to be tuned)
+    dmax = max(dos);
+    wmax = w(dos==dmax);
+    w_th = wmax/2; % threshold (to be tuned)
     xToFit = w(w<=w_th);
 
     % Windowes DOS
