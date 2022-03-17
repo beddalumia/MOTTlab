@@ -14,7 +14,7 @@ function [Z,Zfig] = zetaweight(w,sloc)
 
                                                                global DEBUG
 
-w_th = 0.01; % Threshold to define proper fitting domain! (to be improved)
+w_th = 0.1; % Threshold to define proper fitting domain! (to be improved)
 xToFit = w(abs(w)<=w_th);
 yToFit = real(sloc(abs(w)<=w_th));
 LinearModel = polyfit(xToFit,yToFit,1);
