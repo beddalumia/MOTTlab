@@ -22,11 +22,11 @@ LinearModel = polyfit(xToFit,yToFit,1);
                                                                    if DEBUG
 %% debug / fine-tuning of w_th
 yModel = LinearModel(1)*w + LinearModel(2);                             
-Zfig = figure("Name",'Debug on Z determination','Visible','off');               
+Zfig = figure("Name",'Debug on Z determination','Visible','on');               
 plot(w,real(sloc),':'); hold on                                         
 plot(w, yModel,'r');
 xlabel('\omega');
-legend('Re\Sigma(\omega)','d/dw[Re\Sigma]@\omega=0')
+legend('Re\Sigma(\omega)',"Re\Sigma'(0)\times\omega")
 a = unique(min(real(sloc)));
 b = unique(max(real(sloc)));
 if a<b, ylim([a,b]); end                                

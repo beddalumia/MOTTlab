@@ -20,7 +20,7 @@ function [vF,Dfig] = dirac(w,gloc)
     % Fitting domain
     dmax = max(dos);
     wmax = w(dos==dmax);
-    w_th = wmax/2; % threshold (to be tuned)
+    w_th = wmax/1.5; % threshold (to be tuned)
     xToFit = w(w<=w_th);
 
     % Windowes DOS
@@ -43,6 +43,9 @@ function [vF,Dfig] = dirac(w,gloc)
 
     % In the proximity of the Dirac cone: A(ω)~2π/vF^2
     vF = real(sqrt(2*pi/LinearModel(1))); 
+    if vF > 2
+       vF = 2;
+    end
 
 end
 
