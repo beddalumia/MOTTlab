@@ -198,8 +198,8 @@ function k = elliptic(m)
 %  namely ellipticK(m). Here we remove any explicit test to keep the DEBUG 
 %  mode actually runnable and avoid any needless dependency on toolboxes.
 %
-% See also: math.cellke, ellipke, ellipticK
+% See also: math.zellke, ellipke, ellipticK
 
-  k = math.cellke(m);       
+  k = math.zellke(m);       
   
 end
