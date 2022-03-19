@@ -65,6 +65,18 @@ function gloc = gloc(zeta,D,lattice)
 %    >> phys.gloc(zeta,D,'chain')      or
 %    >> phys.gloc(zeta,D,'1d')         ⟹ 1d chain
 %
+%  • A toy-model for a 2d lattice can be easily defined by assuming a
+%    rectangular-shaped density of states, which trivially leads to
+%
+%           G(z) = 1/(2D) * log((z+D)/(z-D))
+%
+%    The model captures some key features of all the 2d lattices but 
+%    misses important details (most importantly the van Hove peaks),
+%    thus giving only very rough qualitative behavior. [economou]
+%
+%    >> phys.gloc(zeta,D,'2d-toy')     or
+%    >> phys.gloc(zeta,D,'rect')       ⟹ 2d toy-model
+%
 %  • The 2d and 3d HYPERCUBIC lattices can be recasted as suitable elliptic 
 %    integrals(†), for more info see [economou], [delves], [morita].
 %
@@ -126,6 +138,10 @@ function gloc = gloc(zeta,D,lattice)
 
             gloc = gloc_bethe(zeta,D);
             
+        case {'2d-toy','rect'}
+            
+            gloc = gloc_2dtoy(zeta,D);
+
         case {'square','2d'}
             
             gloc = gloc_square(zeta,D);
@@ -177,6 +193,16 @@ function gloc = gloc_chain(zeta,D)
     fact = D.*invz;
     gloc = invz./sqrt(1-fact.^2);
             
+end
+
+function gloc = gloc_2dtoy(zeta,D)
+% Toy model for HM-2d
+% Ref. to [economou]
+
+    znum = zeta + D;
+    zden = zeta - D;
+    gloc = 1/(2*D).*log(znum./zden);
+    
 end
 
 function gloc = gloc_square(zeta,D)

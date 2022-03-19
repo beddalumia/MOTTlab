@@ -108,12 +108,24 @@ quiet = strcmp(pmode,'quiet');
 end
 
 function h = hybr(D,DOS,GLOC)
+global DEBUG
 
     switch DOS
 
         case {'bethe','chain','1d'}
 
             t = D/2;
+
+        case {'2d-toy','rect'}
+
+            t = D/4;
+
+if DEBUG
+            warning("We want to emulate a generic " + ...
+            "2d material, but the DOS does not really " + ...
+            "correspond to any lattice model, so the t(D) " + ...
+            "relation is totally arbitrary. To be investigated. ")
+end
 
         case {'square','2d'}
 
