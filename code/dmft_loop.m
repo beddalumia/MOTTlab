@@ -137,7 +137,8 @@ function h = hybr(D,DOS,GLOC)
 
         otherwise
 
-            error('Invalid lattice');
+            error("Invalid lattice: " + ...
+            "see 'help phys.gloc' for the available choices.");
 
     end
 
