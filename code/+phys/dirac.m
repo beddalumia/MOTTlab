@@ -21,10 +21,10 @@ function [vF,Dfig] = dirac(w,gloc)
     dmax = max(dos);
     wmax = w(dos==dmax);
     w_th = wmax/1.5; % threshold (to be tuned)
-    xToFit = w(w<=w_th);
+    xToFit = w(w<=w_th(1));
 
     % Windowes DOS
-    yToFit = dos(w<=w_th);
+    yToFit = dos(w<=w_th(1));
     LinearModel = polyfit(xToFit,yToFit,1);
 
                                                                    if DEBUG
