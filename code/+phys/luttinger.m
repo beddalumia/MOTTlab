@@ -29,6 +29,8 @@ plot(w(1:end-1),integrand);
 xlabel('\omega');
 ylabel('Im[G(\omega)\partial\Sigma/\partial\omega]');
 ylim([-0.1,0.2]);
+                                                                   else
+Lfig = [];
                                                                    end
 end
 

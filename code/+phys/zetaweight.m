@@ -30,6 +30,8 @@ legend('Re\Sigma(\omega)',"Re\Sigma'(0)\times\omega")
 a = unique(min(real(sloc)));
 b = unique(max(real(sloc)));
 if a<b, ylim([a,b]); end                                
+                                                                   else
+Zfig = [];
                                                                    end
 
 %% Nozieres Theorem: Re{\Sigma(w)} = A + (1-1/Z)w + O(w^3)

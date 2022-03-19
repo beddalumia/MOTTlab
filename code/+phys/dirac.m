@@ -39,6 +39,8 @@ function [vF,Dfig] = dirac(w,gloc)
     a = unique(min(dos));
     b = unique(max(dos));
     if a<b, ylim([a,b]); end                                
+                                                                   else
+    Dfig = [];
                                                                    end
 
     % In the proximity of the Dirac cone: A(ω)~2π/vF^2
