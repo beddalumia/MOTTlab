@@ -13,17 +13,17 @@ end
 %% INPUT: Physical Parameters 
 U    = 0.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
-D    = 2.0;             % Noninteracting half-bandwidth
-latt = 'rect';        % Noninteracting band-dispersion 
+D    = 1.0;             % Noninteracting half-bandwidth
+latt = '1d';         % Noninteracting band-dispersion 
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
 ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
-SPECTRAL     = 1;       % Controls plotting of spectral functions
+SPECTRAL     = 0;       % Controls plotting of spectral functions
 PLOT         = 0;       % Controls plotting of *all static* figures
-GIF          = 1;       % Controls plotting of *animated* figures
+GIF          = 0;       % Controls plotting of *animated* figures
 PRINT        = 0;       % Controls file printing (for single points)
 UARRAY       = 0;       % Activates SLURM scaling of interaction values
 TARRAY       = 0;       % Activates SLURM scaling of temperature values 

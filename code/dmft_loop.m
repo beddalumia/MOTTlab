@@ -56,8 +56,11 @@ quiet = strcmp(pmode,'quiet');
 
     while LOOP
         
-        % Weiss field from local Green's function
-            g0 = 1 ./ (w + eta - hybr(D,dos,gloc));
+        % Hybridization function: defining the dmft-bath
+            hybr = (D/2)^2 * gloc;
+        
+        % Weiss field description of the dmft-bath
+            g0 = 1 ./ (w + eta - hybr);
             
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
@@ -105,55 +108,4 @@ quiet = strcmp(pmode,'quiet');
     
     fprintf('> error = %f\n\n',E);
     
-end
-
-function h = hybr(D,DOS,GLOC)
-global DEBUG
-
-    switch DOS
-
-        case {'bethe','chain','1d'}
-
-            t = D/2;
-
-        case {'2d-toy','rect'}
-
-            t = D/4;
-
-if DEBUG
-            warning("We want to emulate a generic " + ...
-            "2d material, but the DOS does not really " + ...
-            "correspond to any lattice model, so the t(D) " + ...
-            "relation is totally arbitrary. To be investigated. ")
-end
-
-        case {'square','2d'}
-
-            t = D/4;
-
-        case {'sc','cubic','3d'}
-
-            t = D/6;
-
-        case 'bcc'
-
-            t = D/8;
-            
-        case 'lieb'
-            
-            t = 2^1.5*D;
-
-        case {'honey','honeycomb','graphene'}
-
-            t = 2*D/3;
-
-        otherwise
-
-            error("Invalid lattice: " + ...
-            "see 'help phys.gloc' for the available choices.");
-
-    end
-
-    h = t^2*GLOC;
-
 end
