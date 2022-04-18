@@ -32,11 +32,19 @@
 #### <p align="right"> `> v1.0` </p>
 --->
 
-## Milestone II: more lattices
+## Milestone II: more lattices, more transitions!
 
-- [ ] Add a bunch of different particle-hole symmetric lattices, such as finite-coordination Bethe, honeycomb, 2d-square, 1d-chain, 3d-cubic, 3d-bcc... the main inspiration comes from the mighty [GFtools](https://github.com/DerWeh/gftools) by [DerWeh](https://github.com/DerWeh).
+- [ ] Add a bunch of different particle-hole symmetric lattices, so te enable a wider exploration of the MIT 
+    - [x] 1d-chain [analytic Hilbert transform]
+    - [x] 2d-square [but requires fast elliptic integrals with _complex_ input]
+    - [x] add fast complex elliptic integrals
+    - [x] 3d-cubic + bcc [enabled by fast elliptic integrals]
+
+- [ ] Add at least one model semimetal, so to extend the study to SMITs. Implementing the honeycomb lattice would be the obvious option.
 
 - [ ] Rewrite the code for the particle-hole broken case so to enable even more lattices, like kagome, fcc, triangular.
+
+The main inspiration comes from the mighty [GFtools](https://github.com/DerWeh/gftools) by [DerWeh](https://github.com/DerWeh).
 
 
 <!---
