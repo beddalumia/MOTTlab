@@ -40,6 +40,8 @@ function [gloc,sloc] = dmft_loop(gloc,w,U,beta,D,dos,mloop,mix,err,pmode)
 %  Copyright (c) 2020, Gabriele Bellomia
 %  All rights reserved.
 
+persistent g0
+
 if(~exist('pmode','var'))
     pmode = 'notquiet';
 end
@@ -53,14 +55,20 @@ quiet = strcmp(pmode,'quiet');
     counter = 0;
     CONVERGED = false;
     LOOP = true;
+    
+    if isempty(g0)
+        g0 = gloc; % Initial guess for the Weiss field: amounts to sloc = 0
+    end
 
     while LOOP
         
         % Hybridization function: defining the dmft-bath
-            hybr = (D/2)^2 * gloc;
+           %hybr = (D/2)^2 * gloc;
         
         % Weiss field description of the dmft-bath
-            g0 = 1 ./ (w + eta - hybr);
+           %plot(w,imag(g0)); hold on
+           %g0 = 1 ./ (w + eta - hybr);
+           %plot(w,imag(g0)); pause
             
         % Spectral-function of Weiss field
             A0 = -imag(g0) ./ pi;
@@ -75,14 +83,21 @@ quiet = strcmp(pmode,'quiet');
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Self-Consistency relation
-            new_gloc = phys.gloc(w-sloc,D,dos);
+          % new_gloc = 1./(1./g0 - sloc);       % much faster, to be tested
+            new_gloc = phys.gloc(w-sloc,D,dos); % against the dear old gloc
+            new_g0 = 1./(1./new_gloc + sloc);
+            %hybr = (D/2)^2 * new_gloc;
+            %new_g0 = 1 ./ (w + eta - hybr);
+            gloc = new_gloc;
             
         % Mixing ( -> stability )
-            old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 
+            %old_gloc = gloc; gloc = mix*new_gloc+(1-mix)*old_gloc; 
+            old_g0 = g0; g0 = mix*new_g0+(1-mix)*old_g0; 
             
         % Logical Update
             counter = counter + 1;
-            E = norm(gloc-old_gloc)/norm(gloc);
+            %E = norm(gloc-old_gloc)/norm(gloc);
+            E = norm(g0-old_g0)/norm(g0);
             if E < err
                CONVERGED = true; 
             end
