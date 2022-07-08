@@ -85,7 +85,7 @@ quiet = strcmp(pmode,'quiet');
         % Mixing ( -> stability )
             %g0 = mix*new_g0+(1-mix)*old_g0; % LINEAR MIXING
             g0 = adaptive_mixing(old_g0,(new_g0-old_g0),mix,counter);
-            plot(w,imag(g0)); pause
+            %plot(w,imag(g0)); pause
             
         % Logical Update 
             gloc = new_gloc;
@@ -134,17 +134,21 @@ function x = adaptive_mixing(x,Fx,alpha,iter)
 
     x = x + beta.*Fx; % = (1-β)x + βx_new
 
-    if (iter > 1)
-        for j=1:N % TO BE VECTORIZED
-            if(Fx_prev(j) * Fx(j) > 0) % If going smooth...
-                beta(j) = beta(j) + alpha; % ...increase update speed
-                if (beta(j) > alpha_max) 
-                    beta(j) = alpha_max; % but with a cutoff!
-                end
-            else
-                beta(j) = alpha;
-            end
-        end
+     if (iter > 1)
+        % NATURAL LOOP VERSION
+%         for j=1:N 
+%             if(Fx_prev(j) * Fx(j) > 0) % If going smooth...
+%                 beta(j) = beta(j) + alpha; % ...increase update speed
+%                 if (beta(j) > alpha_max) 
+%                     beta(j) = alpha_max; % but with a cutoff!
+%                 end
+%             else
+%                 beta(j) = alpha;
+%             end
+%         end
+        % VECTORIZED VERSION
+        beta(Fx_prev.*Fx>0) = beta(Fx_prev.*Fx>0) + alpha;
+        beta(beta>alpha_max) = alpha_max;
     end
 
     Fx_prev = Fx; % store persistent value
