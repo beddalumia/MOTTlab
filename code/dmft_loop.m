@@ -84,7 +84,10 @@ quiet = strcmp(pmode,'quiet');
             
         % Mixing ( -> stability )
             %g0 = mix*new_g0+(1-mix)*old_g0; % LINEAR MIXING
-            g0 = adaptive_mixing(old_g0,(new_g0-old_g0),mix,counter);
+            x  = imag(old_g0); 
+            Fx  = imag(new_g0-old_g0);
+            img0 = adaptive_mixing(x,Fx,mix,counter);
+            g0 = math.fkkt(img0) + 1i.*img0;
             %plot(w,imag(g0)); pause
             
         % Logical Update 
@@ -125,6 +128,10 @@ function x = adaptive_mixing(x,Fx,alpha,iter)
     persistent Fx_prev    % stored Fx = (x_new - x)
     persistent beta       % stored β (adaptive mixing)
 
+    assert(isreal(x), 'ADAPTIVE MIXING requires real input arrays')
+    assert(isreal(Fx),'ADAPTIVE MIXING requires real input arrays')
+    assert(0<alpha && alpha<1, 'MIXING parameter must be in [0,1]')
+    
     N = length(x);
 
     if(iter==1)
