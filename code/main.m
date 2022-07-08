@@ -12,14 +12,14 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 3.5;             % On-site Repulsion
+U    = 2.5;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
-ULINE        = 1;       % Takes and fixes the given beta value and performs a U-driven line
+ULINE        = 0;       % Takes and fixes the given beta value and performs a U-driven line
 TLINE        = 0;       % Takes and fixes the given U value and performs a T-driven line
 UTSCAN       = 0;       % Ignores both given U and beta values and builds a full phase diagram
 SPECTRAL     = 1;       % Controls plotting of spectral functions
@@ -33,9 +33,9 @@ DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
-mloop = 5000;           % Max number of DMFT iterations 
+mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 0.01;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.10;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams

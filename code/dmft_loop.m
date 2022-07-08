@@ -57,6 +57,8 @@ quiet = strcmp(pmode,'quiet');
 
     while LOOP
         
+           counter = counter + 1;
+        
         % Hybridization function: defining the dmft-bath
            %hybr = (D/2)^2 * gloc;
         
@@ -76,24 +78,18 @@ quiet = strcmp(pmode,'quiet');
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Self-Consistency relation
-          % new_gloc = 1./(1./g0 - sloc);       % much faster, to be tested
-            new_gloc = phys.gloc(w-sloc,D,dos); % against the dear old gloc
-            new_g0 = 1./(1./new_gloc + sloc); old_g0 = g0;
+            new_gloc = phys.gloc(w-sloc,D,dos);  old_gloc = gloc;
+            new_g0   = 1./(1./new_gloc + sloc);  old_g0   = g0;
             
             
         % Mixing ( -> stability )
-            old_gloc = gloc; %gloc = mix*new_gloc+(1-mix)*old_gloc; 
-            gloc = new_gloc;
-            g0 = mix*new_g0+(1-mix)*old_g0;
-            if any(imag(g0)>0)
-               g0(imag(g0)>0) = real(g0(imag(g0)>0)) + eta;
-            end
-            %plot(w,imag(g0)); pause
+            %g0 = mix*new_g0+(1-mix)*old_g0; % LINEAR MIXING
+            g0 = adaptive_mixing(old_g0,(new_g0-old_g0),mix,counter);
+            plot(w,imag(g0)); pause
             
-        % Logical Update
-            counter = counter + 1;
-            E = norm(gloc-old_gloc)/norm(gloc);
-            %E = norm(g0-old_g0)/norm(g0);
+        % Logical Update 
+            gloc = new_gloc;
+            E = norm(gloc-old_gloc)/norm(old_gloc);
             if E < err
                CONVERGED = true; 
             end
@@ -119,4 +115,38 @@ quiet = strcmp(pmode,'quiet');
     
     fprintf('> error = %f\n\n',E);
     
+end
+
+function x = adaptive_mixing(x,Fx,alpha,iter)
+% ADAPTIVE MIXING SCHEME: directly imported from SciFortran
+% > https://github.com/QcmPlab/SciFortran/tree/master/src/SF_OPTIMIZE
+
+    alpha_max = 1;        % maximal mixing parameter α
+    persistent Fx_prev    % stored Fx = (x_new - x)
+    persistent beta       % stored β (adaptive mixing)
+
+    N = length(x);
+
+    if(iter==1)
+        Fx_prev = zeros(1,N);   % reset values at
+        beta = alpha*ones(1,N); % first dmft loop
+    end
+
+    x = x + beta.*Fx; % = (1-β)x + βx_new
+
+    if (iter > 1)
+        for j=1:N % TO BE VECTORIZED
+            if(Fx_prev(j) * Fx(j) > 0) % If going smooth...
+                beta(j) = beta(j) + alpha; % ...increase update speed
+                if (beta(j) > alpha_max) 
+                    beta(j) = alpha_max; % but with a cutoff!
+                end
+            else
+                beta(j) = alpha;
+            end
+        end
+    end
+
+    Fx_prev = Fx; % store persistent value
+
 end
