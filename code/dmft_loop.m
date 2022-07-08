@@ -45,28 +45,25 @@ if(~exist('pmode','var'))
 end
 quiet = strcmp(pmode,'quiet');
 
+persistent A0
+
     %% Iterated Perturbation Theory (IPT)
 
     dw = w(2)-w(1);
-    eta = 2i * dw;
     f = phys.fermi(w,beta);
+    
     counter = 0;
     CONVERGED = false;
     LOOP = true;
-    g0 = gloc; % amounts to sloc=0 initizalization
-
+    
+    if isempty(A0)
+       A0 = -imag(gloc)./pi; % init Weiss spectral function (<--> sloc = 0)
+    end
+    
     while LOOP
         
+        % Increment the loop counter
            counter = counter + 1;
-        
-        % Hybridization function: defining the dmft-bath
-           %hybr = (D/2)^2 * gloc;
-        
-        % Weiss field description of the dmft-bath
-            %g0 = 1 ./ (w + eta - hybr);
-            
-        % Spectral-function of Weiss field
-            A0 = -imag(g0) ./ pi;
             
         % Enforce particle-hole and half-filling ( -> stability )
             A0 = 0.5 * (A0 + flip(A0)); % [ flip{v(1:end)}=v(end:1) ]
@@ -77,22 +74,24 @@ quiet = strcmp(pmode,'quiet');
         % Kramers-Kronig transform, to get Re(Sigma(w))
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
-        % Self-Consistency relation
-            new_gloc = phys.gloc(w-sloc,D,dos);  old_gloc = gloc;
-            new_g0   = 1./(1./new_gloc + sloc);  old_g0   = g0;
+        % Store "old" fields
+            old_gloc = gloc; old_A0 = A0;
             
+        % Self-Consistency relations
+            gloc = phys.gloc(w-sloc,D,dos);  
+            g0   = 1./(1./gloc + sloc);
+            A0   = -imag(g0) ./ pi;
             
         % Mixing ( -> stability )
-            %g0 = mix*new_g0+(1-mix)*old_g0; % LINEAR MIXING
-            x  = imag(old_g0); 
-            Fx  = imag(new_g0-old_g0);
-            img0 = adaptive_mixing(x,Fx,mix,counter);
-            g0 = math.fkkt(img0) + 1i.*img0;
-            %plot(w,imag(g0)); pause
+            A0 = adaptive_mixing(A0,(A0-old_A0),mix,counter);
+            
+        % Enforce causality ( -> stability )
+            A0 = abs(A0);
+            %plot(w,A0); pause
             
         % Logical Update 
-            gloc = new_gloc;
-            E = norm(gloc-old_gloc)/norm(old_gloc);
+            %E = norm(gloc-old_gloc)/norm(old_gloc);
+            E = norm(A0-old_A0)/norm(old_A0);
             if E < err
                CONVERGED = true; 
             end
