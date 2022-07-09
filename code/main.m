@@ -12,7 +12,7 @@ try
 end
 
 %% INPUT: Physical Parameters 
-U    = 2.0;             % On-site Repulsion
+U    = 3.0;             % On-site Repulsion
 beta = inf;             % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
 latt = 'bethe';         % Noninteracting band-dispersion 
@@ -35,11 +35,11 @@ FAST         = 1;       % Activates fast FFTW-based convolutions
 %% INPUT: Control Parameters
 mloop = 1000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
-mix   = 1e-5;           % Mixing parameter for DMFT iterations (=1 means full update)
+mix   = 0.01;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
-Ustep = 0.01;           % Hubbard U incremental step for phase diagrams
+Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
 Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams

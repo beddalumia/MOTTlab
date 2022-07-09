@@ -45,8 +45,6 @@ if(~exist('pmode','var'))
 end
 quiet = strcmp(pmode,'quiet');
 
-persistent A0
-
     %% Iterated Perturbation Theory (IPT)
 
     dw = w(2)-w(1);
@@ -56,14 +54,15 @@ persistent A0
     CONVERGED = false;
     LOOP = true;
     
-    if isempty(A0)
-       A0 = -imag(gloc)./pi; % init Weiss spectral function (<--> sloc = 0)
-    end
+    g0 = gloc; % amounts to sloc=0 initizalization
     
     while LOOP
         
         % Increment the loop counter
            counter = counter + 1;
+            
+        % Spectral-function of Weiss field
+            A0 = -imag(g0) ./ pi;
             
         % Enforce particle-hole and half-filling ( -> stability )
             A0 = 0.5 * (A0 + flip(A0)); % [ flip{v(1:end)}=v(end:1) ]
@@ -75,23 +74,24 @@ persistent A0
             sloc = math.fkkt(imsloc) + 1i.*imsloc;
             
         % Store "old" fields
-            old_gloc = gloc; old_A0 = A0;
+            old_gloc = gloc; old_g0 = g0;
             
         % Self-Consistency relations
             gloc = phys.gloc(w-sloc,D,dos);  
             g0   = 1./(1./gloc + sloc);
-            A0   = -imag(g0) ./ pi;
             
         % Mixing ( -> stability )
-            A0 = adaptive_mixing(A0,(A0-old_A0),mix,counter);
+            x  = old_g0;
+            Fx = g0 - old_g0;
+            g0 = adaptive_mixing(x,Fx,mix,counter);
             
-        % Enforce causality ( -> stability )
-            A0 = abs(A0);
-            %plot(w,A0); pause
+        % Debug plotting
+            %plot(w,real(g0)); hold on
+            %plot(w,imag(g0)); hold off
+            %pause
             
         % Logical Update 
-            %E = norm(gloc-old_gloc)/norm(old_gloc);
-            E = norm(A0-old_A0)/norm(old_A0);
+            E = norm(gloc-old_gloc)/norm(old_gloc);
             if E < err
                CONVERGED = true; 
             end
@@ -127,8 +127,6 @@ function x = adaptive_mixing(x,Fx,alpha,iter)
     persistent Fx_prev    % stored Fx = (x_new - x)
     persistent beta       % stored β (adaptive mixing)
 
-    assert(isreal(x), 'ADAPTIVE MIXING requires real input arrays')
-    assert(isreal(Fx),'ADAPTIVE MIXING requires real input arrays')
     assert(0<alpha && alpha<1, 'MIXING parameter must be in [0,1]')
     
     N = length(x);
@@ -153,7 +151,8 @@ function x = adaptive_mixing(x,Fx,alpha,iter)
 %             end
 %         end
         % VECTORIZED VERSION
-        beta(Fx_prev.*Fx>0) = beta(Fx_prev.*Fx>0) + alpha;
+        oscillating = real(Fx_prev).*real(Fx)<0 | imag(Fx_prev).*imag(Fx)<0;
+        beta(not(oscillating)) = beta(not(oscillating)) + alpha;
         beta(beta>alpha_max) = alpha_max;
     end
 
