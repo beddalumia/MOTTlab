@@ -83,7 +83,8 @@ quiet = strcmp(pmode,'quiet');
         % Mixing ( -> stability )
             x  = old_g0;
             Fx = g0 - old_g0;
-            g0 = adaptive_mixing(x,Fx,mix,counter);
+            % g0 = adaptive_mixing(x,Fx,mix,counter);
+            g0 = mix*g0 + (1-mix)*old_g0;
             
         % Debug plotting
             %plot(w,real(g0)); hold on
@@ -92,6 +93,7 @@ quiet = strcmp(pmode,'quiet');
             
         % Logical Update 
             E = norm(gloc-old_gloc)/norm(old_gloc);
+            %E = norm(Fx)/norm(old_g0);
             if E < err
                CONVERGED = true; 
             end

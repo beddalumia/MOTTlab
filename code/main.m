@@ -13,9 +13,9 @@ end
 
 %% INPUT: Physical Parameters 
 U    = 3.0;             % On-site Repulsion
-beta = inf;             % Inverse Temperature
+beta = 1000;            % Inverse Temperature
 D    = 1.0;             % Noninteracting half-bandwidth
-latt = 'bethe';         % Noninteracting band-dispersion 
+latt = '3d';            % Noninteracting band-dispersion 
 
 %% INPUT: Boolean Flags
 MottBIAS     = 0;       % Changes initial guess of gloc (strongly favours Mott phase)
@@ -33,14 +33,14 @@ DEBUG        = 0;       % Activates debug prints / plots / operations
 FAST         = 1;       % Activates fast FFTW-based convolutions
 
 %% INPUT: Control Parameters
-mloop = 1000;           % Max number of DMFT iterations 
+mloop = 9000;           % Max number of DMFT iterations 
 err   = 1e-5;           % Convergence threshold for self-consistency
 mix   = 0.01;           % Mixing parameter for DMFT iterations (=1 means full update)
 wres  = 2^15;           % Energy resolution in real-frequency axis
 wcut  = 6.00;           % Energy cutoff in real-frequency axis
 Umin  = 0.00;           % Hubbard U minimum value for phase diagrams
 Ustep = 0.10;           % Hubbard U incremental step for phase diagrams
-Umax  = 6.00;           % Hubbard U maximum value for phase diagrams
+Umax  = 5.00;           % Hubbard U maximum value for phase diagrams
 Tmin  = 1e-3;           % Temperature U minimum value for phase diagrams
 Tstep = 1e-3;           % Temperature incremental step for phase diagrams
 Tmax  = 5e-2;           % Temperature U maximum value for phase diagrams
